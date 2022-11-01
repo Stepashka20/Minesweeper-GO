@@ -1,0 +1,13 @@
+.imgAndText{
+    display: flex;
+    align-items: center;
+}
+.imgAndText:first-child{
+    margin-right: 10px;
+}
+.balanceAndRating{
+    display: flex;
+}
+.userName{
+    margin-bottom: 5px;
+}
