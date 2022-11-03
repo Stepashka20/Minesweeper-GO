@@ -2,6 +2,7 @@ import { useState,useEffect } from 'react';
 import { createStyles, Header, Container, Burger, Paper, Transition, Menu,Avatar, UnstyledButton,Group,Text, Button } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { MantineLogo } from '@mantine/ds';
+import { Link,useLocation } from "react-router-dom"
 
 import star from '../../assets/svg/star.svg';
 import bomb from '../../assets/svg/bomb.svg';
@@ -107,32 +108,29 @@ const useStyles = createStyles((theme) => ({
 
 
 
-export function HeaderResponsive({ links,auth,setPage,page }) {
+export function HeaderResponsive({ links,auth }) {
+    const location = useLocation();
     const [opened, { toggle, close }] = useDisclosure(false);
     const [active, setActive] = useState(links.length > 0 ? links[0].link : null);
     //use effect for active
     useEffect(() => {
         setActive(links.length > 0 ? links[0].link : null);
     },[auth]);
-    useEffect(() => {
-        setActive(page);
-    },[page]);
+
     const { classes, cx } = useStyles();
     const [userMenuOpened, setUserMenuOpened] = useState(false);
     const items = links.map((link) => (
-        <a
-        key={link.label}
-        href={link.link}
-        className={cx(classes.link, { [classes.linkActive]: active === link.link })}
-        onClick={(event) => {
-            event.preventDefault();
-            setPage(link.link);
-            
-        }}
+        <Link
+            key={link.label}
+            to={link.link}
+            className={cx(classes.link, { [classes.linkActive]: location.pathname === link.link })}
+            onClick={(event) => {
+                setActive(link.link);
+            }}
         >
         {link.icon}
         {link.label}
-        </a>
+        </Link>
     ));
 
   return (
