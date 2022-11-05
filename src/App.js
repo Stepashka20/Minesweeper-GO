@@ -48,10 +48,6 @@ export default function App() {
                 icon: <IconUser/>
             },
             ] : []} />
-            {/* <Main/> */}
-            {/* <Play/> */}
-            {/* <Top/> */}
-            {/* <Shop/> */}
             <Routes>
                 <Route path="/main" element={<Main />} />
                 <Route path="/play" element={<Play />} />
