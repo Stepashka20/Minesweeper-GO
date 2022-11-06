@@ -1,14 +1,19 @@
-import { Avatar, Card, Image, Text, Badge, Button, Group  } from '@mantine/core';
+import { Avatar, Card, Image, Text, Badge, Button, Grid   } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import { IconCloudUpload } from '@tabler/icons';
 import { useStyles } from './ProfileStyle';
+import { StatisticCard } from './StatisticCard'
 
 import star from '../../assets/svg/star.svg';
 import bomb from '../../assets/svg/bomb.svg';
 
+import time from './time.png'
+import game from './game.png'
+import cup from './cup.png'
 export function Profile() {
     const { classes } = useStyles();
-    
-    return (
+    const isMobile = useMediaQuery('(max-width: 600px)');
+    return ( 
         <div className={classes.root}>
             <div className={classes.container}>
                 <Card shadow="sm" p="lg" radius="md" withBorder className={classes.userAvatarUploadCard}>
@@ -21,52 +26,43 @@ export function Profile() {
                     </Button>
                 </Card>
                 <Card shadow="sm" p="lg" radius="md" withBorder className={classes.userInfo}>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-
+                    <Grid justify="space-around">
+                        <Grid.Col span={4} style={{flexBasis: isMobile?"100%":"50%",maxWidth: isMobile?"100%":"50%"}}>
+                            <Text size={24} weight="light" style={{marginBottom: 20}}>Статистика</Text>
+                            <StatisticCard
+                                totalLabel="Лучшее время"
+                                img={time}
+                                
+                                difficulty={[
+                                    {label: "Лёгкая", time: "1:20"},
+                                    {label: "Средняя", time: "4:20"},
+                                    {label: "Сложная", time: "8:37"},
+                                ]}
+                            />
+                            <StatisticCard
+                                totalLabel="Количество игр"
+                                img={game}
+                                difficulty={[
+                                    {label: "Лёгкая", time: "20"},
+                                    {label: "Средняя", time: "55"},
+                                    {label: "Сложная", time: "64"},
+                                ]}
+                            />
+                            <StatisticCard
+                                totalLabel="Процент побед"
+                                img={cup}
+                                difficulty={[
+                                    {label: "Лёгкая", time: "33 %"},
+                                    {label: "Средняя", time: "50 %"},
+                                    {label: "Сложная", time: "15 %"},
+                                ]}
+                            />
+                        </Grid.Col>
+                        <Grid.Col span={4} style={{flexBasis: isMobile?"100%":"50%",maxWidth: isMobile?"100%":"50%"}}>
+                            <Text size={24} weight="light">История игр</Text>
+                            {/* <Text>Пока что пусто</Text> */}
+                        </Grid.Col>
+                    </Grid>
                 </Card>
             </div>
         </div>

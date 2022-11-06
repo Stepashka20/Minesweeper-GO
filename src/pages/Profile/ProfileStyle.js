@@ -33,11 +33,13 @@ export const useStyles = createStyles((theme, _params, getRef) => ({
     userInfo:{
         marginLeft: 20,
         width: "calc(100% - 280px)",
+        // height: "90vh",
         "@media (max-width: 768px)": {
             marginLeft: 0,
             width: "auto",
             marginTop: 20
         }
-    }
+    },
+
     
 }));
