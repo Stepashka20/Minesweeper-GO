@@ -1,9 +1,9 @@
 import { Avatar, Card, Image, Text, Badge, Button, Grid   } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { IconCloudUpload } from '@tabler/icons';
+import { IconCloudUpload, IconHistory, IconChartBar } from '@tabler/icons';
 import { useStyles } from './ProfileStyle';
 import { StatisticCard } from './StatisticCard'
-
+import { HistoryTable } from './HistoryTable'
 import star from '../../assets/svg/star.svg';
 import bomb from '../../assets/svg/bomb.svg';
 
@@ -27,8 +27,8 @@ export function Profile() {
                 </Card>
                 <Card shadow="sm" p="lg" radius="md" withBorder className={classes.userInfo}>
                     <Grid justify="space-around">
-                        <Grid.Col span={4} style={{flexBasis: isMobile?"100%":"50%",maxWidth: isMobile?"100%":"50%"}}>
-                            <Text size={24} weight="light" style={{marginBottom: 20}}>Статистика</Text>
+                        <Grid.Col span={4} style={{flexBasis: isMobile?"100%":"40%",maxWidth: isMobile?"100%":"40%"}}>
+                            <Text size={24} weight="light" style={{marginBottom: 20, marginLeft: 20, display: "flex", alignItems: "center"}}><IconChartBar style={{marginRight: 8}}/>Статистика</Text>
                             <StatisticCard
                                 totalLabel="Лучшее время"
                                 img={time}
@@ -58,9 +58,9 @@ export function Profile() {
                                 ]}
                             />
                         </Grid.Col>
-                        <Grid.Col span={4} style={{flexBasis: isMobile?"100%":"50%",maxWidth: isMobile?"100%":"50%"}}>
-                            <Text size={24} weight="light">История игр</Text>
-                            {/* <Text>Пока что пусто</Text> */}
+                        <Grid.Col span={4} style={{flexBasis: isMobile?"100%":"60%",maxWidth: isMobile?"100%":"60%"}}>
+                            <Text size={24} weight="light" style={{display: "flex", alignItems: "center"}}><IconHistory style={{marginRight: 8}}/> История игр</Text>
+                            <HistoryTable/>
                         </Grid.Col>
                     </Grid>
                 </Card>
