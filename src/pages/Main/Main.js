@@ -3,7 +3,6 @@ import { Button } from '@mantine/core';
 import mine from "../../assets/img/mine.png"
 import "./Main.css";
 export function Main() {
-//https://mantine.dev/styles/responsive/#changing-component-size-based-on-media-query !!!!!!
 
     return (
         <div className="centered">

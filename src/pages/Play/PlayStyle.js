@@ -5,10 +5,9 @@ import { createStyles } from '@mantine/core';
 export const useStyles = createStyles((theme, _params, getRef) => ({
     centered:{
         "@media (min-width: 500px)":{
-            position: "absolute",
+            position: "fixed",
             top: "50%",
             left: "50%",
-            marginRight: "-50%",
             transform: "translate(-50%, -50%)",
             color: "#fff",
             display: "flex",

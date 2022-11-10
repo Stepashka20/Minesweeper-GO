@@ -1,13 +1,13 @@
-import { SegmentedControl, Box, Button, Grid,Input,Divider ,Avatar,Badge,ScrollArea,Transition      } from '@mantine/core';
+import { SegmentedControl, Box, Button, Grid,Input,Divider ,Avatar,Badge,ScrollArea,LoadingOverlay      } from '@mantine/core';
 import { useState } from 'react';
 import { useStyles } from './PlayStyle';
-import video from "./1234462006.mp4"
+import { useMediaQuery } from '@mantine/hooks';
 
 
 import star from '../../assets/svg/star.svg';
 import bomb from '../../assets/svg/bomb.svg';
 
-import "./Play.css";
+
 export function Play() {
     const { classes } = useStyles();
     const [mode, setMode] = useState('singleplayer');
@@ -26,16 +26,11 @@ export function Play() {
         { name: "Stepashka20", avatar: "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4", bet: "6254 ⭐", difficulty: 1},
         { name: "Stepashka20", avatar: "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4", bet: "1005 💣", difficulty: 3},
       ];
-    const isMobile = window.innerWidth < 768;
+    const isMobile = useMediaQuery('(max-width: 600px)');
     return (
         <>
-            {/* <video id="background-video" autoPlay loop muted controls>
-                <source src={video} type="video/mp4"/>
-            </video> */}
-            {/* <video width="750" height="500"  loop>
-                <source src={video} type="video/mp4"/>
-            </video> */}
             <div className={classes.centered}>
+                <LoadingOverlay visible={true} overlayBlur={2} radius={8} loaderProps={{ variant: 'dots' }}/>
                 <SegmentedControl
                     data={[
                         { label: 'Одиночная игра', value: 'singleplayer' },
@@ -48,6 +43,7 @@ export function Play() {
                     value={mode}
                 />
                 {mode === 'singleplayer'?
+                
                 <Box className={classes.card}>
                     <div className={classes.settingsRow}>
                         <div>Размер поля</div>
