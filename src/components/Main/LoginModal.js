@@ -3,12 +3,12 @@ import { Modal, Button, Space,TextInput,PasswordInput,Text   } from '@mantine/co
 import { showNotification } from '@mantine/notifications';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconAt,IconLock,IconUser,IconAlertTriangle } from '@tabler/icons';
+import { useNavigate } from "react-router-dom";
 
-
-export function LoginModal({opened, closeModal}) {
+export function LoginModal({opened, closeModal,setUser}) {
     const [modalType, setModalType] = useState("login");
     const isMobile = useMediaQuery('(max-width: 600px)');
-
+    const navigate = useNavigate();
     const   email = useRef(null),
             password = useRef(null),
             login = useRef(null),
@@ -16,6 +16,11 @@ export function LoginModal({opened, closeModal}) {
 
     const auth = () =>{
         console.log(email.current.value,password.current.value);
+        if(email.current.value == "admin" && password.current.value == "admin"){
+            setUser({auth: true});
+            closeModal();
+            navigate("/play");
+        }
     }
     const register = () =>{
         console.log(login.current.value,email.current.value,password.current.value,password2.current.value);

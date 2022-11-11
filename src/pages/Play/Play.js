@@ -1,5 +1,5 @@
-import { SegmentedControl, Box, Button, Grid,Input,Divider ,Avatar,Badge,ScrollArea,LoadingOverlay      } from '@mantine/core';
-import { useState } from 'react';
+import { SegmentedControl, Box, Button, Grid,Input,Divider ,Avatar,Badge,ScrollArea,LoadingOverlay,Select  } from '@mantine/core';
+import { useEffect, useState } from 'react';
 import { useStyles } from './PlayStyle';
 import { useMediaQuery } from '@mantine/hooks';
 
@@ -7,6 +7,7 @@ import { useMediaQuery } from '@mantine/hooks';
 import star from '../../assets/svg/star.svg';
 import bomb from '../../assets/svg/bomb.svg';
 
+import { GameScreen } from './GameScreen';
 
 export function Play() {
     const { classes } = useStyles();
@@ -26,11 +27,41 @@ export function Play() {
         { name: "Stepashka20", avatar: "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4", bet: "6254 ⭐", difficulty: 1},
         { name: "Stepashka20", avatar: "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4", bet: "1005 💣", difficulty: 3},
       ];
+    const [size, setSize] = useState(10);
+    const [difficulty, setDifficulty] = useState("easy");
+    const [bets, setBets] = useState([
+        { label: <div style={{display:"flex",alignItems:"center"}}>0 <img src={star} width={20}/></div>, value: 'r3ea7ct' },
+        { label: <div style={{display:"flex",alignItems:"center"}}>0 <img src={star} width={20}/></div>, value: 'n39g' },
+        { label: <div style={{display:"flex",alignItems:"center"}}>0 <img src={star} width={20}/></div>, value: 'n312g' },
+    ]);
+    const [gameScreen, setGameScreen] = useState(!false);
+    const secondsToMS = (seconds) => {
+        let minutes = Math.floor(seconds / 60);
+        let secondsLeft = seconds % 60;
+        return `${minutes}:${secondsLeft<10 ? "0":""}${secondsLeft}`;
+    }
+    useEffect(() => {
+        const p = {
+            "easy": 1,
+            "medium": 2,
+            "hard": 3
+        }
+        const pointsMin = p[difficulty]*(size*5+70);
+        const timeMin = (p[difficulty]+2)*(size*2+Math.floor(size/2));
+
+        setBets([
+            { label: <div style={{display:"flex",alignItems:"center"}}>{secondsToMS(timeMin)} - {pointsMin} <img src={star} width={20} style={{marginLeft: 4}}/></div>, value: 'r3ea7ct' },
+            { label: <div style={{display:"flex",alignItems:"center"}}>{secondsToMS(timeMin*2)} - {Math.floor(pointsMin*1.8)} <img src={star} width={20} style={{marginLeft: 4}}/></div>, value: 'n39g' },
+            { label: <div style={{display:"flex",alignItems:"center"}}>{secondsToMS(timeMin*3)} - {Math.floor(pointsMin*1.9*1.9)} <img src={star} width={20} style={{marginLeft: 4}}/></div>, value: 'n312g' },
+        ])
+    },[size,difficulty])
     const isMobile = useMediaQuery('(max-width: 600px)');
     return (
         <>
+        {!gameScreen ? 
+        <>
             <div className={classes.centered}>
-                <LoadingOverlay visible={true} overlayBlur={2} radius={8} loaderProps={{ variant: 'dots' }}/>
+                {/* <LoadingOverlay visible={true} overlayBlur={2} radius={8} loaderProps={{ variant: 'dots' }}/> */}
                 <SegmentedControl
                     data={[
                         { label: 'Одиночная игра', value: 'singleplayer' },
@@ -49,33 +80,33 @@ export function Play() {
                         <div>Размер поля</div>
                         <SegmentedControl
                             data={[
-                                { label: '10x10', value: 'rea7ct' },
-                                { label: '15x15', value: 'n9g' },
-                                { label: '20x20', value: 'n12g' },
+                                { label: '10x10', value: "10" },
+                                { label: '15x15', value: "15" },
+                                { label: '20x20', value: "20" },
                             ]}
                             size={isMobile ? 'sm' : 'md'}
+                            onChange={(value) => setSize(value)}
                         />
                     </div>
                     <div className={classes.settingsRow}>
                         <div>Сложность</div>
                         <SegmentedControl
                             data={[
-                                { label: 'Легкая', value: 'r23ea7ct' },
-                                { label: 'Средняя', value: 'n29g' },
-                                { label: 'Сложная', value: '3n12g' },
+                                { label: 'Легкая', value: 'easy' },
+                                { label: 'Средняя', value: 'medium' },
+                                { label: 'Сложная', value: 'hard' },
                             ]}
                             size={isMobile ? 'sm' : 'md'}
+                            onChange={(value) => setDifficulty(value)}
                         />
                     </div>
                     <div className={classes.settingsRow}>
-                        <div>Ставка</div>
+                        <div>Бонус</div>
                         <SegmentedControl
-                            data={[
-                                { label: '1:20 - 500', value: 'r3ea7ct' },
-                                { label: '3:20 - 300', value: 'n39g' },
-                                { label: '4:20 - 100', value: 'n312g' },
-                            ]}
+                            data={bets}
                             size={isMobile ? 'sm' : 'md'}
+                            orientation={isMobile ? 'vertical' : 'horizontal'}
+                            // defaultValue="r3ea7ct"
                         />
                     </div>
                     <Button fullWidth={true} variant="filled" radius="md" size="md" >
@@ -158,6 +189,9 @@ export function Play() {
 
                 
             </div>
+        </>
+        :
+        <GameScreen/>}
         </>
     )
 }

@@ -16,7 +16,7 @@ import {LoginModal} from './components/Main/LoginModal';
 export default function App() {
 
     const [user, setUser] = useState({
-        auth: !true,
+        auth: true,
     });
     const [opened, setOpened] = useState(false);
 
@@ -27,7 +27,7 @@ export default function App() {
             
             <MantineProvider withGlobalStyles withNormalizeCSS theme={{colorScheme: 'dark'}}>
                 <NotificationsProvider position="top-right" >
-                    <LoginModal opened={opened} closeModal={closeModal}/>
+                    <LoginModal opened={opened} closeModal={closeModal} setUser={setUser}/>
                     <HeaderResponsive auth={auth} links={user.auth ? [
                     {
                         label: 'Играть',
