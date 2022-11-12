@@ -17,19 +17,20 @@ export const useStyles = createStyles((theme, _params, getRef) => ({
     },
     box:{
         // margin:1,
-        width: "calc(100% / 20)",
+        // width: "calc(100% / 10)",
         aspectRatio: "1/1",
         background:"#1a1b1e",
         border: "1px solid #2a2b2e",
         borderRadius: 4,
         cursor: 'pointer',
         "&:hover":{
-            background:"#1a1b1e",
+            background:"#1a1b1e2b",
         },
         "@media (max-width: 768px)": {
             width: 40,
         }
     },
+    
     table:{
         display: 'flex',
         flexWrap: 'wrap',

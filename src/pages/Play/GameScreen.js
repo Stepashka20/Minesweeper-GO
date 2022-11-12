@@ -9,6 +9,8 @@ import ScrollContainer from 'react-indiana-drag-scroll'
 export function GameScreen() {
     const { classes } = useStyles();
     const isMobile = useMediaQuery('(max-width: 600px)');
+    const size =20;
+    
     return (
         <div className={classes.centered}>
             <Grid>
@@ -61,32 +63,13 @@ export function GameScreen() {
                 </Grid.Col>
                 <Grid.Col span={6} className={classes.gameGrid} style={isMobile?{flexBasis:"100%",maxWidth:"100%"}:{}}>
                     <Card shadow="sm" p={isMobile ? 0 : "lg"} radius="md" withBorder>
-                    {/* <SimpleGrid cols={10}>
-                        {[...Array(100)].map((item,i) => (
-                            <div className={classes.box}>
-                                {i+1}
-                            </div>
-                        ))}
-                    </SimpleGrid> */}
-                    {/* Generate table 10x10 */}
-                    {/* <table>
-                        <tbody>
-                            {[...Array(10)].map((item,i) => (
-                                <tr>
-                                    {[...Array(10)].map((item,i) => (
-                                        <td className={classes.box}>
-                                            
-                                        </td>
-                                    ))}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table> */}
                     <ScrollContainer className="scroll-container">
-                        <div className={classes.table}>
-                            {[...Array(400)].map((item,i) => (
-                                <div className={classes.box}>
-                                    {/* {i+1} */}
+                        <div className={classes.table} >
+                            {/* style={{width: isMobile && size==10 ? "600px" : "800px"}}       
+                              style={{width: !isMobile?`calc(100% / ${size})`:{"10":`calc(100% / ${size})`,"15":`calc(100% / ${size})`,"20":15}[size]}} */}
+                            {[...Array(size*size)].map((item,i) => (
+                                <div className={classes.box}style={{width: `calc(100% / ${size})`}}  onClick={()=>console.log(i)}>
+                                    
                                 </div>
                             ))}
                         </div>
