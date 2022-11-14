@@ -68,7 +68,7 @@ export function GameScreen() {
                             {/* style={{width: isMobile && size==10 ? "600px" : "800px"}}       
                               style={{width: !isMobile?`calc(100% / ${size})`:{"10":`calc(100% / ${size})`,"15":`calc(100% / ${size})`,"20":15}[size]}} */}
                             {[...Array(size*size)].map((item,i) => (
-                                <div className={classes.box}style={{width: `calc(100% / ${size})`}}  onClick={()=>console.log(i)}>
+                                <div className={classes.box} style={{width: `calc(100% / ${size})`}}  onClick={()=>console.log(i)}>
                                     
                                 </div>
                             ))}
