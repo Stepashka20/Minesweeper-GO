@@ -55,8 +55,13 @@ export const useStyles = createStyles((theme, _params, getRef) => ({
     enterGameBtn:{
         marginLeft: 16,
     },
-    // lobbyRows:{
-    //     display: "flex",
-    //     flexDirection: "column",
-    // }
+    startGameRow:{
+        display: "flex",
+        alignItems: "center",
+
+        "& svg":{
+            marginLeft: 16,
+            cursor: "pointer",
+        }
+    }
 }));

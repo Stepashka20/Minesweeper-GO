@@ -2,17 +2,21 @@ import { SegmentedControl, Box, Button, Grid,Input,Divider ,Avatar,Badge,ScrollA
 import { useEffect, useState } from 'react';
 import { useStyles } from './PlayStyle';
 import { useMediaQuery } from '@mantine/hooks';
-
+import {IconHelp} from '@tabler/icons';
 
 import star from '../../assets/svg/star.svg';
 import bomb from '../../assets/svg/bomb.svg';
 
 import { GameScreen } from './GameScreen';
+import { HelpSingleGameModal} from '../../components/Modals/HelpSingleGameModal';
+import { HelpMultiplayerGame} from '../../components/Modals/HelpMultiplayerGameModal';
 
 export function Play() {
     const { classes } = useStyles();
     const [mode, setMode] = useState('singleplayer');
     const [typeBet, setTypeBet] = useState('rating');
+    const [singleGameHelpOpened, setSingleGameHelpOpened] = useState(false);
+    const [multiplayerGameHelpOpened, setMultiplayerGameHelpOpened] = useState(false);
     const lobbies = [
         { name: "Stepashka20", avatar: "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4", bet: "125 💣", difficulty: 1},
         { name: "Stepashka20", avatar: "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4", bet: "1000 ⭐", difficulty: 2},
@@ -34,7 +38,7 @@ export function Play() {
         { label: <div style={{display:"flex",alignItems:"center"}}>0 <img src={star} width={20}/></div>, value: 'n39g' },
         { label: <div style={{display:"flex",alignItems:"center"}}>0 <img src={star} width={20}/></div>, value: 'n312g' },
     ]);
-    const [gameScreen, setGameScreen] = useState(!false);
+    const [gameScreen, setGameScreen] = useState(false);
     const secondsToMS = (seconds) => {
         let minutes = Math.floor(seconds / 60);
         let secondsLeft = seconds % 60;
@@ -61,6 +65,8 @@ export function Play() {
         {!gameScreen ? 
         <>
             <div className={classes.centered}>
+                <HelpSingleGameModal opened={singleGameHelpOpened} closeModal={()=>setSingleGameHelpOpened(false)}/>
+                <HelpMultiplayerGame opened={multiplayerGameHelpOpened} closeModal={()=>setMultiplayerGameHelpOpened(false)}/>
                 {/* <LoadingOverlay visible={true} overlayBlur={2} radius={8} loaderProps={{ variant: 'dots' }}/> */}
                 <SegmentedControl
                     data={[
@@ -109,9 +115,12 @@ export function Play() {
                             // defaultValue="r3ea7ct"
                         />
                     </div>
-                    <Button fullWidth={true} variant="filled" radius="md" size="md" >
-                        Начать игру
-                    </Button>
+                    <div className={classes.startGameRow}>
+                        <Button fullWidth={true} variant="filled" radius="md" size="md" >
+                            Начать игру 
+                        </Button>
+                        <IconHelp size={36} onClick={()=>setSingleGameHelpOpened(true)}/>
+                    </div>
                 </Box>
                 :
                 <Box className={classes.card}>
@@ -154,9 +163,12 @@ export function Play() {
                                 <div>Ставка</div>
                                 <Input style={{width:100}} size="md"  rightSection={<img width={24} src={typeBet == "bomb" ?bomb:star} alt="bomb"/>} />
                             </div>
-                            <Button fullWidth={true} variant="filled" radius="md" size="md" >
+                            <div className={classes.startGameRow}>
+                                <Button fullWidth={true} variant="filled" radius="md" size="md" >
                                 Создать лобби
-                            </Button>
+                                </Button>
+                                <IconHelp size={36} onClick={()=>setMultiplayerGameHelpOpened(true)}/>
+                            </div>
                         </Grid.Col>
                         <Grid.Col span={4} >
                             {/* ScrollArea  */}

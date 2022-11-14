@@ -11,7 +11,7 @@ import {Top} from './pages/Top/Top';
 import {Shop} from './pages/Shop/Shop';
 import {Profile} from './pages/Profile/Profile';
 
-import {LoginModal} from './components/Main/LoginModal';
+import {LoginModal} from './components/Modals/LoginModal';
 
 export default function App() {
 
