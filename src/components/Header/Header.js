@@ -108,7 +108,7 @@ const useStyles = createStyles((theme) => ({
 
 
 
-export function HeaderResponsive({ links,auth }) {
+export function HeaderResponsive({ links,auth,user }) {
     const location = useLocation();
     const [opened, { toggle, close }] = useDisclosure(false);
     const [active, setActive] = useState(links.length > 0 ? links[0].link : null);
@@ -154,23 +154,21 @@ export function HeaderResponsive({ links,auth }) {
                     className={classes.userActive}
                 >
                     <Group spacing={7}>
-                    <Avatar src="https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4" alt="" radius="xl" size={44} />
+                    <Avatar src={user.avatar ? user.avatar:""} alt="" radius="xl" size={44} />
                     <Text weight={500} size="lg" sx={{ lineHeight: 1 }} mr={3}>
-                        <div className='userName'>Stepashka20</div>
+                        <div className='userName'>{user.username}</div>
                         <div className='balanceAndRating'>
                         <span className='imgAndText'>
                             <img className={classes.pointsIcon} src={bomb} alt="star" />
-                            56560
+                            {user.balance}
                             
                         </span>
                         <span className='imgAndText'>
                             <img className={classes.balanceIcon} src={star} alt="star" />
-                            
-                            1000
+                            {user.rating}
                         </span>
                         </div>
                     </Text>
-                    {/* <IconChevronDown size={12} stroke={1.5} /> */}
                     </Group>
                 </UnstyledButton>
                 </Menu.Target>
