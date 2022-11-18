@@ -3,6 +3,7 @@ import { createStyles, Header, Container, Burger, Paper, Transition, Menu,Avatar
 import { useDisclosure } from '@mantine/hooks';
 import { MantineLogo } from '@mantine/ds';
 import { Link,useLocation } from "react-router-dom"
+import {IconLogout} from '@tabler/icons';
 
 import star from '../../assets/svg/star.svg';
 import bomb from '../../assets/svg/bomb.svg';
@@ -108,7 +109,7 @@ const useStyles = createStyles((theme) => ({
 
 
 
-export function HeaderResponsive({ links,auth,user }) {
+export function HeaderResponsive({ links,auth,user,logout }) {
     const location = useLocation();
     const [opened, { toggle, close }] = useDisclosure(false);
     const [active, setActive] = useState(links.length > 0 ? links[0].link : null);
@@ -154,9 +155,9 @@ export function HeaderResponsive({ links,auth,user }) {
                     className={classes.userActive}
                 >
                     <Group spacing={7}>
-                    <Avatar src={user.avatar ? user.avatar:""} alt="" radius="xl" size={44} />
+                    <Avatar style={user.shop.avatarBorder ? {border: `3px solid ${user.shop.avatarBorder}`} : {}} src={user.avatar ? `${process.env.REACT_APP_API_URL}/cdn/${user.avatar}`:""} alt="" radius="xl" size={44} />
                     <Text weight={500} size="lg" sx={{ lineHeight: 1 }} mr={3}>
-                        <div className='userName'>{user.username}</div>
+                        <div className='userName' style={user.shop.usernameColor ? {color:user.shop.usernameColor } : {}}>{user.username}</div>
                         <div className='balanceAndRating'>
                         <span className='imgAndText'>
                             <img className={classes.pointsIcon} src={bomb} alt="star" />
@@ -173,7 +174,7 @@ export function HeaderResponsive({ links,auth,user }) {
                 </UnstyledButton>
                 </Menu.Target>
                 <Menu.Dropdown>
-                <Menu.Item color="red">
+                <Menu.Item icon={<IconLogout size={14} />} onClick={()=>logout()}>
                     Выйти
                 </Menu.Item>
                 </Menu.Dropdown>

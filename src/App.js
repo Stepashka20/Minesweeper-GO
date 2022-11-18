@@ -43,14 +43,23 @@ export default function App() {
                 if (raw.ok){
                     setUserAuth(true);
                     setUser(response);
-                } else {
-                    localStorage.removeItem("token");
                 }
                 setLoading(false);
             }
         }
         checkAuth();
     }, []);
+
+    const logout = () => {
+        localStorage.removeItem("token");
+        setUserAuth(false);
+        setUser({
+            username: "",
+            balance: 0,
+            rating: 0,
+            avatar: "",
+        });
+    }
     return (
         <Router>
             
@@ -58,7 +67,7 @@ export default function App() {
                 <LoadingOverlay visible={loading} overlayBlur={2} />
                 <NotificationsProvider position="top-right" >
                     <LoginModal opened={opened} closeModal={closeModal} setUserAuth={setUserAuth} setUser={setUser}/>
-                    <HeaderResponsive user={user} auth={auth} links={userAuth ? [
+                    <HeaderResponsive user={user} auth={auth} logout={logout}  links={userAuth ? [
                     {
                         label: 'Играть',
                         link: '/play',
