@@ -96,7 +96,7 @@ export default function App() {
                         <Route index path="/play" element={<Play />} />
                         <Route path="/top" element={<Top />} />
                         <Route path="/shop" element={<Shop />} />
-                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/profile" element={<Profile user={user} setUser={setUser}/>} />
                         <Route
                             path="*"
                             element={<Navigate to="/play" replace />}

@@ -81,9 +81,9 @@ export function LoginModal({opened, closeModal,setUserAuth,setUser}) {
     }
 
     const login_user = async () =>{
-        if (!email.current.value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) {
+        if (login.current.value.length < 3) {
             return showNotification({
-                message: 'Неверный формат email',
+                message: 'Длина логина должна быть минимум 3 символа',
                 color: 'red'
             })
         }
@@ -99,7 +99,7 @@ export function LoginModal({opened, closeModal,setUserAuth,setUser}) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                email: email.current.value,
+                login: login.current.value,
                 password: password.current.value,
             })
         })
@@ -134,7 +134,7 @@ export function LoginModal({opened, closeModal,setUserAuth,setUser}) {
             fullScreen={isMobile} 
         >
             {modalType=="login" ? <>
-                <TextInput label="Email" placeholder="Email" icon={<IconAt size={14} />} radius={8} ref={email}/>
+                <TextInput label="Логин" placeholder="Логин" icon={<IconUser size={14} />} radius={8} ref={login}/>
                 <Space h="xs" />
                 <PasswordInput
                     placeholder="Пароль"

@@ -1,4 +1,6 @@
-import { Avatar, Card, Image, Text, Badge, Button, Grid   } from '@mantine/core';
+import {useState, useEffect} from 'react';
+import { Avatar, Card, FileButton, Text, Badge, Button, Grid   } from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconCloudUpload, IconHistory, IconChartBar } from '@tabler/icons';
 import { useStyles } from './ProfileStyle';
@@ -10,20 +12,70 @@ import bomb from '../../assets/svg/bomb.svg';
 import time from './time.png'
 import game from './game.png'
 import cup from './cup.png'
-export function Profile() {
+export function Profile({user,setUser}) {
     const { classes } = useStyles();
     const isMobile = useMediaQuery('(max-width: 600px)');
+    const [avatarFile, setAvatarFile] = useState(null);
+    const [avatarUploading, setAvatarUploading] = useState(false);
+    useEffect(() => {
+        async function uploadAvatar() {
+            if (avatarFile) {
+                console.log(avatarFile)
+                if (avatarFile.size > 1024 * 1024) {
+                    showNotification({
+                        message: 'Размер аватарки не должен превышать 1 МБ',
+                        color: 'red'
+                    })
+                    setAvatarFile(null);
+                    return
+                }
+                setAvatarUploading(true);
+                const formData = new FormData();
+                formData.append('file', avatarFile);
+                const raw = await fetch(process.env.REACT_APP_API_URL+"/upload", {
+                    method: 'POST',
+                    headers: {
+                        authorization: localStorage.getItem('token')
+                    },
+                    body: formData
+                })
+                const response = await raw.json();
+                if (raw.ok){
+                    showNotification({
+                        message: 'Аватарка успешно загружена. Чтобы увидеть изменения, необходимо подождать, пока прошлая аватарка выгрузится из кэша',
+                        color: 'green'
+                    })
+                    // update only user.avatar
+                    setUser({...user, avatar: response.url})
+                } else {
+                    showNotification({
+                        message: response.message,
+                        color: 'red'
+                    })
+                }
+                setAvatarUploading(false);
+            }
+        }
+        uploadAvatar();
+    }, [avatarFile]);
+
+
     return ( 
         <div className={classes.root}>
             <div className={classes.container}>
                 <Card shadow="sm" p="lg" radius="md" withBorder className={classes.userAvatarUploadCard}>
-                    <Avatar src="https://avatars.githubusercontent.com/u/14338007?v=4" size="xl"  radius={50}/>
-                    <Text weight="bold">Stepashka20</Text>
-                    <Text className={classes.textWithImage}>Баланс: 5000 <img src={star} width={16} style={{marginLeft: 8}}/></Text>
-                    <Text className={classes.textWithImage}>Рейтинг: 5000 <img src={bomb} width={16} style={{marginLeft: 8}}/></Text>
-                    <Button variant="light" color="blue" fullWidth mt="md" radius="md" leftIcon={<IconCloudUpload/>}>
-                        Загрузить аватар
-                    </Button>
+                    <Avatar style={user.shop.avatarBorder ? {border: `3px solid ${user.shop.avatarBorder}`} : {}} src={user.avatar ? `${process.env.REACT_APP_API_URL}/cdn/${user.avatar}`:""} size="xl"  radius={50}/>
+                    <Text weight="bold" style={user.shop.usernameColor ? {color:user.shop.usernameColor } : {}}>{user.username}</Text>
+                    <Text className={classes.textWithImage}>Баланс: {user.balance} <img src={star} width={16} style={{marginLeft: 8}}/></Text>
+                    <Text className={classes.textWithImage}>Рейтинг: {user.rating} <img src={bomb} width={16} style={{marginLeft: 8}}/></Text>
+                    
+                    <FileButton onChange={setAvatarFile} accept="image/png,image/jpeg,image/jpg">
+                        {(props) => 
+                            <Button {...props} loading={avatarUploading} variant="light" color="blue" fullWidth mt="md" radius="md" leftIcon={<IconCloudUpload/>}>
+                                Загрузить аватар
+                            </Button>
+                        }
+                    </FileButton>
                 </Card>
                 <Card shadow="sm" p="lg" radius="md" withBorder className={classes.userInfo}>
                     <Grid justify="space-around">
