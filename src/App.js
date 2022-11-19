@@ -22,6 +22,7 @@ export default function App() {
         rating: 0,
         avatar: "",
     });
+    const [top, setTop] = useState([]);
     const [opened, setOpened] = useState(false);
     const [loading, setLoading] = useState(false);
     const auth = () => setOpened(true);
@@ -42,7 +43,9 @@ export default function App() {
                 const response = await raw.json();
                 if (raw.ok){
                     setUserAuth(true);
-                    setUser(response);
+                    setUser(response.user);
+                    console.log(response.top);
+                    setTop(response.top);
                 }
                 setLoading(false);
             }
@@ -66,7 +69,7 @@ export default function App() {
             <MantineProvider withGlobalStyles withNormalizeCSS theme={{colorScheme: 'dark'}}>
                 <LoadingOverlay visible={loading} overlayBlur={2} />
                 <NotificationsProvider position="top-right" >
-                    <LoginModal opened={opened} closeModal={closeModal} setUserAuth={setUserAuth} setUser={setUser}/>
+                    <LoginModal opened={opened} closeModal={closeModal} setUserAuth={setUserAuth} setUser={setUser} setTop={setTop}/>
                     <HeaderResponsive user={user} auth={auth} logout={logout}  links={userAuth ? [
                     {
                         label: 'Играть',
@@ -94,7 +97,7 @@ export default function App() {
                         
                         {userAuth ? <>
                         <Route index path="/play" element={<Play />} />
-                        <Route path="/top" element={<Top />} />
+                        <Route path="/top" element={<Top top={top}/>} />
                         <Route path="/shop" element={<Shop />} />
                         <Route path="/profile" element={<Profile user={user} setUser={setUser}/>} />
                         <Route

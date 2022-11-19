@@ -58,7 +58,19 @@ export function Profile({user,setUser}) {
         }
         uploadAvatar();
     }, [avatarFile]);
+    const msToMMSS = (ms) => {
+        let seconds = Math.floor((ms / 1000) % 60);
+        let minutes = Math.floor((ms / (1000 * 60)) % 60);
 
+        seconds = seconds < 10 ? '0' + seconds : seconds;
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+
+        return minutes + ':' + seconds;
+    }
+    const getWinPercent = (wins, games) => {
+        if (games === 0) return "0 %";
+        return Math.round(wins / games * 100) + " %";
+    }
 
     return ( 
         <div className={classes.root}>
@@ -86,33 +98,33 @@ export function Profile({user,setUser}) {
                                 img={time}
                                 
                                 difficulty={[
-                                    {label: "Лёгкая", time: "1:20"},
-                                    {label: "Средняя", time: "4:20"},
-                                    {label: "Сложная", time: "8:37"},
+                                    {label: "Лёгкая", time: msToMMSS(user.statistics.bestTime.easy)},
+                                    {label: "Средняя", time: msToMMSS(user.statistics.bestTime.medium)},
+                                    {label: "Сложная", time: msToMMSS(user.statistics.bestTime.hard)},
                                 ]}
                             />
                             <StatisticCard
                                 totalLabel="Количество игр"
                                 img={game}
                                 difficulty={[
-                                    {label: "Лёгкая", time: "20"},
-                                    {label: "Средняя", time: "55"},
-                                    {label: "Сложная", time: "64"},
+                                    {label: "Лёгкая", time: user.statistics.games.easy},
+                                    {label: "Средняя", time: user.statistics.games.medium},
+                                    {label: "Сложная", time: user.statistics.games.hard},
                                 ]}
                             />
                             <StatisticCard
                                 totalLabel="Процент побед"
                                 img={cup}
                                 difficulty={[
-                                    {label: "Лёгкая", time: "33 %"},
-                                    {label: "Средняя", time: "50 %"},
-                                    {label: "Сложная", time: "15 %"},
+                                    {label: "Лёгкая", time: getWinPercent(user.statistics.wins.easy, user.statistics.games.easy)},
+                                    {label: "Средняя", time: getWinPercent(user.statistics.wins.medium, user.statistics.games.medium)},
+                                    {label: "Сложная", time: getWinPercent(user.statistics.wins.hard, user.statistics.games.hard)},
                                 ]}
                             />
                         </Grid.Col>
                         <Grid.Col span={4} style={{flexBasis: isMobile?"100%":"60%",maxWidth: isMobile?"100%":"60%"}}>
                             <Text size={24} weight="light" style={{display: "flex", alignItems: "center"}}><IconHistory style={{marginRight: 8}}/> История игр</Text>
-                            <HistoryTable/>
+                            <HistoryTable history={user.gameHistory}/>
                         </Grid.Col>
                     </Grid>
                 </Card>

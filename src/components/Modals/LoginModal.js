@@ -5,7 +5,7 @@ import { useMediaQuery } from '@mantine/hooks';
 import { IconAt,IconLock,IconUser,IconAlertTriangle } from '@tabler/icons';
 import { useNavigate } from "react-router-dom";
 
-export function LoginModal({opened, closeModal,setUserAuth,setUser}) {
+export function LoginModal({opened, closeModal,setUserAuth,setUser,setTop}) {
     const [modalType, setModalType] = useState("login");
     const isMobile = useMediaQuery('(max-width: 600px)');
     const navigate = useNavigate();
@@ -59,9 +59,9 @@ export function LoginModal({opened, closeModal,setUserAuth,setUser}) {
         })
         const response = await raw.json();
         if(raw.ok){
-            setUser(response);
-            //set jwt to localstorage
-            localStorage.setItem('token', `Bearer ${response.token}`);
+            setUser(response.user);
+            setTop(response.top);
+            localStorage.setItem('token', `Bearer ${response.user.token}}`);
             setRegLoading(false);
             setUserAuth(true);
             closeModal();
@@ -106,8 +106,9 @@ export function LoginModal({opened, closeModal,setUserAuth,setUser}) {
         const response = await raw.json();
         console.log(raw);
         if(raw.ok){
-            localStorage.setItem('token', `Bearer ${response.token}`);
-            setUser(response);
+            localStorage.setItem('token', `Bearer ${response.user.token}`);
+            setUser(response.user);
+            setTop(response.top);
             setLogLoading(false);
             setUserAuth(true);
             closeModal();

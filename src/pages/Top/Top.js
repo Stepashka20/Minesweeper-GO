@@ -6,14 +6,9 @@ import cup from '../../assets/svg/cup.svg';
 import star from '../../assets/svg/star.svg';
 import {IconQuestionMark,IconInfoCircle} from '@tabler/icons';
 
-export function Top() {
+export function Top({top}) {
     const { classes } = useStyles();
-    const topUsers = [
-        {name:"Stepashka20", avatar: "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4", totalPoints: 19000, wins: 100, looses: 34},
-        {name:"SuperValerka", avatar: "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4", totalPoints: 10800, wins:98, looses: 11},
-        {name:"WTF", avatar: "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4", totalPoints: 6782, wins: 45, looses: 11},
-        {name:"TOMATO", avatar: "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4", totalPoints: 476, wins: 12, looses: 4},
-    ]
+
     return (
         <div>
             <BackgroundImage
@@ -58,17 +53,17 @@ export function Top() {
                     </div>
                 </div>
                 <div className={classes.topBody}>
-                    {topUsers.map((user, index) => (
+                    {top.map((user, index) => (
                         <div key={index} className={classes.topRow}>
                             <div className={classes.item}> {index+1} </div>
                             <div className={classes.item}>
-                                <Avatar className={classes.avatar} src={user.avatar} alt="" radius="xl" size={38} />
-                                <span className={classes.name}>{user.name}</span>
+                                <Avatar className={classes.avatar} style={user.shop.avatarBorder ? {border: `3px solid ${user.shop.avatarBorder}`} : {}} src={user.avatar ? `${process.env.REACT_APP_API_URL}/cdn/${user.avatar}`:""} alt="" radius="xl" size={38} />
+                                <span className={classes.name} style={user.shop.usernameColor ? {color:user.shop.usernameColor } : {}}>{user.username}</span>
                             </div>
-                            <div className={classes.item}> {user.totalPoints} <img style={{marginLeft: 8}} width={16} src={star}/> </div>
+                            <div className={classes.item}> {user.rating} <img style={{marginLeft: 8}} width={16} src={star}/> </div>
                             <div className={classes.item}> {user.wins} </div>
-                            <div className={classes.item}> {user.looses} </div>
-                            <div className={classes.item}> {+(user.wins/user.looses).toFixed(2)} </div>
+                            <div className={classes.item}> {user.losses} </div>
+                            <div className={classes.item}> {+(user.wins/user.losses).toFixed(2) || 0} </div>
                         </div>
                     ))}
                     
