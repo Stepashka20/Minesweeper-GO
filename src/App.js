@@ -23,6 +23,7 @@ export default function App() {
         avatar: "",
     });
     const [top, setTop] = useState([]);
+    const [shopItems, setShopItems] = useState([]);
     const [opened, setOpened] = useState(false);
     const [loading, setLoading] = useState(false);
     const auth = () => setOpened(true);
@@ -46,6 +47,18 @@ export default function App() {
                     setUser(response.user);
                     console.log(response.top);
                     setTop(response.top);
+                }
+                //https://api.minesweeper-go.ru/shop/items
+                const raw2 = await fetch(process.env.REACT_APP_API_URL+"/shop/items", {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': token
+                    },
+                })
+                const response2 = await raw2.json();
+                if (raw2.ok){
+                    setShopItems(response2);
                 }
                 setLoading(false);
             }
@@ -98,7 +111,7 @@ export default function App() {
                         {userAuth ? <>
                         <Route index path="/play" element={<Play />} />
                         <Route path="/top" element={<Top top={top}/>} />
-                        <Route path="/shop" element={<Shop />} />
+                        <Route path="/shop" element={<Shop shopItems={shopItems} user={user} setUser={setUser}/> } />
                         <Route path="/profile" element={<Profile user={user} setUser={setUser}/>} />
                         <Route
                             path="*"

@@ -76,7 +76,7 @@ export function Profile({user,setUser}) {
         <div className={classes.root}>
             <div className={classes.container}>
                 <Card shadow="sm" p="lg" radius="md" withBorder className={classes.userAvatarUploadCard}>
-                    <Avatar style={user.shop.avatarBorder ? {border: `3px solid ${user.shop.avatarBorder}`} : {}} src={user.avatar ? `${process.env.REACT_APP_API_URL}/cdn/${user.avatar}`:""} size="xl"  radius={50}/>
+                    <Avatar style={user.shop.avatarBorder ? {border: `3px solid ${user.shop.avatarBorder}`} : {}} src={user.avatar ? `${process.env.REACT_APP_API_URL}/cdn/avatar/${user.avatar}`:""} size="xl"  radius={50}/>
                     <Text weight="bold" style={user.shop.usernameColor ? {color:user.shop.usernameColor } : {}}>{user.username}</Text>
                     <Text className={classes.textWithImage}>Баланс: {user.balance} <img src={star} width={16} style={{marginLeft: 8}}/></Text>
                     <Text className={classes.textWithImage}>Рейтинг: {user.rating} <img src={bomb} width={16} style={{marginLeft: 8}}/></Text>

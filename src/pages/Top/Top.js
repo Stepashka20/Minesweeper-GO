@@ -57,7 +57,7 @@ export function Top({top}) {
                         <div key={index} className={classes.topRow}>
                             <div className={classes.item}> {index+1} </div>
                             <div className={classes.item}>
-                                <Avatar className={classes.avatar} style={user.shop.avatarBorder ? {border: `3px solid ${user.shop.avatarBorder}`} : {}} src={user.avatar ? `${process.env.REACT_APP_API_URL}/cdn/${user.avatar}`:""} alt="" radius="xl" size={38} />
+                                <Avatar className={classes.avatar} style={user.shop.avatarBorder ? {border: `3px solid ${user.shop.avatarBorder}`} : {}} src={user.avatar ? `${process.env.REACT_APP_API_URL}/cdn/avatar/${user.avatar}`:""} alt="" radius="xl" size={38} />
                                 <span className={classes.name} style={user.shop.usernameColor ? {color:user.shop.usernameColor } : {}}>{user.username}</span>
                             </div>
                             <div className={classes.item}> {user.rating} <img style={{marginLeft: 8}} width={16} src={star}/> </div>

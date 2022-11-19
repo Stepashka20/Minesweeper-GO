@@ -155,7 +155,7 @@ export function HeaderResponsive({ links,auth,user,logout }) {
                     className={classes.userActive}
                 >
                     <Group spacing={7}>
-                    <Avatar style={user.shop.avatarBorder ? {border: `3px solid ${user.shop.avatarBorder}`} : {}} src={user.avatar ? `${process.env.REACT_APP_API_URL}/cdn/${user.avatar}`:""} alt="" radius="xl" size={44} />
+                    <Avatar style={user.shop.avatarBorder ? {border: `3px solid ${user.shop.avatarBorder}`} : {}} src={user.avatar ? `${process.env.REACT_APP_API_URL}/cdn/avatar/${user.avatar}`:""} alt="" radius="xl" size={44} />
                     <Text weight={500} size="lg" sx={{ lineHeight: 1 }} mr={3}>
                         <div className='userName' style={user.shop.usernameColor ? {color:user.shop.usernameColor } : {}}>{user.username}</div>
                         <div className='balanceAndRating'>
