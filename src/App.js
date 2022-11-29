@@ -14,6 +14,66 @@ import {Profile} from './pages/Profile/Profile';
 import {LoginModal} from './components/Modals/LoginModal';
 
 
+class GameProcess {
+    constructor(uid,gameParams,setGameParams) {
+        this.uid = uid;
+        this.gameParams = gameParams;
+        this.setGameParams = setGameParams;
+
+    }
+
+    async connect(){
+        this.socket = new WebSocket(`wss://${process.env.REACT_APP_API_URL.replace("https://","")}/ws/?uid=${this.uid}&token=${localStorage.getItem("token").replace("Bearer ","")}`);
+        this.socket.onopen = () => {
+            console.log("connected");
+            setInterval(() => {
+                this.socket.send(JSON.stringify({type: "ping"}));
+            }, 10000);
+        }
+        this.socket.onclose = () => {
+            console.log("disconnected");
+        }
+        this.socket.onmessage = async (message) => {
+            const data = JSON.parse(message.data);
+            console.log(data);
+            if (data.type === "open"){
+                await this.setGameParams({
+                    ...this.gameParams,
+                    field: data.data.userField, 
+                });
+                console.log(this.gameParams);
+            }
+        }
+    }
+
+    async openCell(i){
+        this.socket.send(JSON.stringify({
+            type: "open",
+            data: i
+        }))
+    }
+
+    async flagCell(i){
+        this.socket.send(JSON.stringify({
+            type: "flag",
+            data: i
+        }))
+    }
+
+    async unflagCell(i){
+        this.socket.send(JSON.stringify({
+            type: "unflag",
+            data: i
+        }))
+    }
+
+    async leaveGame(){
+        this.socket.send(JSON.stringify({
+            type: "leave"
+        }))
+    }
+}
+
 export default function App() {
     const [userAuth, setUserAuth] = useState(false);
     const [user, setUser] = useState({
@@ -22,13 +82,41 @@ export default function App() {
         rating: 0,
         avatar: "",
     });
+
+    const [gameParams, setGameParams] = useState({
+        gameType: 1,
+        active: false,
+        uid: 0,
+        opponent: {
+            username: "",
+            avatar: "",
+            rating: 0,
+        },
+        results: {
+            me: 0,
+            opponent: 0,
+        },
+        timer: 0,
+        gameParams: {
+            size: 10,
+            difficulty: 0,
+            reward:0
+        },
+        field:[1,2,2,2,2,2,2,0,0,3,0,1,0,0,0,4,0,0,5,1,0,0,0,4,0,1,0,0,4,0,0,0,-1,0,0,0,1,-1,0,0,0,0,0,0,1,0,0,-1,0,0,1,0,0,0,4,5,3,4,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0]
+    });
+
+
     const [top, setTop] = useState([]);
     const [shopItems, setShopItems] = useState([]);
     const [opened, setOpened] = useState(false);
     const [loading, setLoading] = useState(false);
     const auth = () => setOpened(true);
     const closeModal = () => setOpened(false);
-
+    const connectGame = async (uid) => {
+        const game = new GameProcess(uid,gameParams,setGameParams); //Move to gameParams
+        await game.connect();
+        return game;
+    }
     useEffect(() => {
         async function checkAuth() {
             const token = localStorage.getItem("token");
@@ -110,7 +198,7 @@ export default function App() {
                     <Routes>
                         
                         {userAuth ? <>
-                        <Route index path="/play" element={<Play />} />
+                        <Route index path="/play" element={<Play gameParams={gameParams} setGameParams={setGameParams} connectGame={connectGame}/>} />
                         <Route path="/top" element={<Top top={top}/>} />
                         <Route path="/shop" element={<Shop shopItems={shopItems} user={user} setUser={setUser}/> } />
                         <Route path="/profile" element={<Profile user={user} setUser={setUser}/>} />

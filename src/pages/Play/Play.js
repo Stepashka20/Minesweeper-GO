@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useStyles } from './PlayStyle';
 import { useMediaQuery } from '@mantine/hooks';
 import {IconHelp} from '@tabler/icons';
+import { showNotification } from '@mantine/notifications';
 
 import star from '../../assets/svg/star.svg';
 import bomb from '../../assets/svg/bomb.svg';
@@ -11,10 +12,11 @@ import { GameScreen } from './GameScreen';
 import { HelpSingleGameModal} from '../../components/Modals/HelpSingleGameModal';
 import { HelpMultiplayerGame} from '../../components/Modals/HelpMultiplayerGameModal';
 
-export function Play() {
+export function Play({gameParams,setGameParams,connectGame}) {
     const { classes } = useStyles();
     const [mode, setMode] = useState('singleplayer');
     const [typeBet, setTypeBet] = useState('rating');
+    const [loading, setLoading] = useState(false);
     const [singleGameHelpOpened, setSingleGameHelpOpened] = useState(false);
     const [multiplayerGameHelpOpened, setMultiplayerGameHelpOpened] = useState(false);
     const lobbies = [
@@ -31,12 +33,13 @@ export function Play() {
         { name: "Stepashka20", avatar: "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4", bet: "6254 ⭐", difficulty: 1},
         { name: "Stepashka20", avatar: "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4", bet: "1005 💣", difficulty: 3},
       ];
-    const [size, setSize] = useState(10);
+    const [size, setSize] = useState("10");
     const [difficulty, setDifficulty] = useState("easy");
+    const [timeBet, setTimeBet] = useState("time_0");
     const [bets, setBets] = useState([
-        { label: <div style={{display:"flex",alignItems:"center"}}>0 <img src={star} width={20}/></div>, value: 'r3ea7ct' },
-        { label: <div style={{display:"flex",alignItems:"center"}}>0 <img src={star} width={20}/></div>, value: 'n39g' },
-        { label: <div style={{display:"flex",alignItems:"center"}}>0 <img src={star} width={20}/></div>, value: 'n312g' },
+        { label: <div style={{display:"flex",alignItems:"center"}}>0 <img src={star} width={20}/></div>, value: 'time_0' },
+        { label: <div style={{display:"flex",alignItems:"center"}}>0 <img src={star} width={20}/></div>, value: 'time_1' },
+        { label: <div style={{display:"flex",alignItems:"center"}}>0 <img src={star} width={20}/></div>, value: 'time_2' },
     ]);
     const [gameScreen, setGameScreen] = useState(false);
     const secondsToMS = (seconds) => {
@@ -54,11 +57,61 @@ export function Play() {
         const timeMin = (p[difficulty]+2)*(size*2+Math.floor(size/2));
 
         setBets([
-            { label: <div style={{display:"flex",alignItems:"center"}}>{secondsToMS(timeMin)} - {pointsMin} <img src={star} width={20} style={{marginLeft: 4}}/></div>, value: 'r3ea7ct' },
-            { label: <div style={{display:"flex",alignItems:"center"}}>{secondsToMS(timeMin*2)} - {Math.floor(pointsMin*1.8)} <img src={star} width={20} style={{marginLeft: 4}}/></div>, value: 'n39g' },
-            { label: <div style={{display:"flex",alignItems:"center"}}>{secondsToMS(timeMin*3)} - {Math.floor(pointsMin*1.9*1.9)} <img src={star} width={20} style={{marginLeft: 4}}/></div>, value: 'n312g' },
+            { label: <div style={{display:"flex",alignItems:"center"}}>{secondsToMS(timeMin)} - {pointsMin} <img src={star} width={20} style={{marginLeft: 4}}/></div>, value: 'time_0' },
+            { label: <div style={{display:"flex",alignItems:"center"}}>{secondsToMS(timeMin*2)} - {Math.floor(pointsMin*1.8)} <img src={star} width={20} style={{marginLeft: 4}}/></div>, value: 'time_1' },
+            { label: <div style={{display:"flex",alignItems:"center"}}>{secondsToMS(timeMin*3)} - {Math.floor(pointsMin*1.9*1.9)} <img src={star} width={20} style={{marginLeft: 4}}/></div>, value: 'time_2' },
         ])
     },[size,difficulty])
+
+    const startSingleGame =async () => {
+        setLoading(true);
+        // setTimeout(() => {
+        //     setLoading(false);
+        //     setGameScreen(true);
+        // }, 1000);
+
+        ///game/start
+        const raw = await fetch(process.env.REACT_APP_API_URL+"/game/start", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem("token")
+            },
+            body: JSON.stringify({
+                size: +size,
+                difficulty: difficulty,
+                timeBet: timeBet,
+                mode: "single"
+            })
+        });
+
+        const response = await raw.json();
+        console.log(response)
+        if(raw.ok){
+            setGameParams({
+                ...gameParams,
+                uid: response.uid,
+                active: true,
+                gameParams:{
+                    size: response.size,
+                    difficulty: response.difficulty,
+                    reward: response.reward,
+                },
+                timeBet: response.timeBet,
+                mode: response.mode,
+                field: response.userField
+            })
+            setLoading(false);
+            setGameScreen(true)
+        }else{
+            showNotification({
+                type: "error",
+                // title: "Error",
+                message: response.message
+            })
+        }
+
+    }
     const isMobile = useMediaQuery('(max-width: 600px)');
     return (
         <>
@@ -67,7 +120,7 @@ export function Play() {
             <div className={classes.centered}>
                 <HelpSingleGameModal opened={singleGameHelpOpened} closeModal={()=>setSingleGameHelpOpened(false)}/>
                 <HelpMultiplayerGame opened={multiplayerGameHelpOpened} closeModal={()=>setMultiplayerGameHelpOpened(false)}/>
-                {/* <LoadingOverlay visible={true} overlayBlur={2} radius={8} loaderProps={{ variant: 'dots' }}/> */}
+                <LoadingOverlay visible={loading} overlayBlur={2} radius={8} loaderProps={{ variant: 'dots' }}/>
                 <SegmentedControl
                     data={[
                         { label: 'Одиночная игра', value: 'singleplayer' },
@@ -112,11 +165,12 @@ export function Play() {
                             data={bets}
                             size={isMobile ? 'sm' : 'md'}
                             orientation={isMobile ? 'vertical' : 'horizontal'}
+                            onChange={(value) => setTimeBet(value)}
                             // defaultValue="r3ea7ct"
                         />
                     </div>
                     <div className={classes.startGameRow}>
-                        <Button fullWidth={true} variant="filled" radius="md" size="md" >
+                        <Button fullWidth={true} variant="filled" radius="md" size="md" onClick={()=>startSingleGame()}>
                             Начать игру 
                         </Button>
                         <IconHelp size={36} onClick={()=>setSingleGameHelpOpened(true)}/>
@@ -203,7 +257,7 @@ export function Play() {
             </div>
         </>
         :
-        <GameScreen/>}
+        <GameScreen gameParams={gameParams} setGameParams={setGameParams} connectGame={connectGame}/>}
         </>
     )
 }

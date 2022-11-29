@@ -23,6 +23,9 @@ export const useStyles = createStyles((theme, _params, getRef) => ({
         border: "1px solid #2a2b2e",
         borderRadius: 4,
         cursor: 'pointer',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         "&:hover":{
             background:"#1a1b1e2b",
         },
@@ -43,5 +46,11 @@ export const useStyles = createStyles((theme, _params, getRef) => ({
         "& .mantine-Card-root":{
             padding: 0,
         }
+    },
+    flag:{
+        width: "60%",
+    },
+    number:{
+        fontSize: 40,
     }
 }));
