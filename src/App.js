@@ -47,8 +47,9 @@ export default function App() {
                     setUser(response.user);
                     console.log(response.top);
                     setTop(response.top);
+                } else {
+                    return setLoading(false)
                 }
-                //https://api.minesweeper-go.ru/shop/items
                 const raw2 = await fetch(process.env.REACT_APP_API_URL+"/shop/items", {
                     method: 'GET',
                     headers: {
@@ -82,7 +83,7 @@ export default function App() {
             <MantineProvider withGlobalStyles withNormalizeCSS theme={{colorScheme: 'dark'}}>
                 <LoadingOverlay visible={loading} overlayBlur={2} />
                 <NotificationsProvider position="top-right" >
-                    <LoginModal opened={opened} closeModal={closeModal} setUserAuth={setUserAuth} setUser={setUser} setTop={setTop}/>
+                    <LoginModal opened={opened} closeModal={closeModal} setUserAuth={setUserAuth} setUser={setUser} setTop={setTop} setShopItems={setShopItems}/>
                     <HeaderResponsive user={user} auth={auth} logout={logout}  links={userAuth ? [
                     {
                         label: 'Играть',

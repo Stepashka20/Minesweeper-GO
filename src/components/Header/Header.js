@@ -7,7 +7,7 @@ import {IconLogout} from '@tabler/icons';
 
 import star from '../../assets/svg/star.svg';
 import bomb from '../../assets/svg/bomb.svg';
-
+import logo from '../../assets/svg/logo.svg';
 import './Header.css';
 const HEADER_HEIGHT = 60;
 
@@ -137,7 +137,11 @@ export function HeaderResponsive({ links,auth,user,logout }) {
   return (
     <Header height={HEADER_HEIGHT} className={classes.root}>
       <Container size={1400} className={classes.header}>
-        <MantineLogo size={28} />
+        {/* <MantineLogo type="" size={28} /> */}
+        <div>
+        <img src={logo} alt="logo" style={{width: 36}}/>
+        Minesweeper GO
+        </div>
         {links.length > 0 ?  <>
             <Group spacing={5} className={classes.links}>
             {items}
@@ -151,7 +155,6 @@ export function HeaderResponsive({ links,auth,user,logout }) {
             >
                 <Menu.Target>
                 <UnstyledButton
-                    // className={cx(classes.user, { [classes.userActive]: userMenuOpened })}
                     className={classes.userActive}
                 >
                     <Group spacing={7}>

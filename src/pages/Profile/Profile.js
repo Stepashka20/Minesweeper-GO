@@ -42,10 +42,9 @@ export function Profile({user,setUser}) {
                 const response = await raw.json();
                 if (raw.ok){
                     showNotification({
-                        message: 'Аватарка успешно загружена. Чтобы увидеть изменения, необходимо подождать, пока прошлая аватарка выгрузится из кэша',
+                        message: response.message,
                         color: 'green'
                     })
-                    // update only user.avatar
                     setUser({...user, avatar: response.url})
                 } else {
                     showNotification({

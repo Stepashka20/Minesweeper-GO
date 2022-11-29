@@ -17,7 +17,6 @@ export function Shop({shopItems,user,setUser}) {
                             <Group className={classes.products}>
                                 {
                                     shopItems[key].map((item) => {
-                                        console.log(item.id,user.items.includes(item.id),user.activeItems[key] == item.id)
                                         return (
                                             <Product 
                                                 setUser={setUser}

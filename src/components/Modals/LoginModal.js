@@ -5,7 +5,7 @@ import { useMediaQuery } from '@mantine/hooks';
 import { IconAt,IconLock,IconUser,IconAlertTriangle } from '@tabler/icons';
 import { useNavigate } from "react-router-dom";
 
-export function LoginModal({opened, closeModal,setUserAuth,setUser,setTop}) {
+export function LoginModal({opened, closeModal,setUserAuth,setUser,setTop,setShopItems}) {
     const [modalType, setModalType] = useState("login");
     const isMobile = useMediaQuery('(max-width: 600px)');
     const navigate = useNavigate();
@@ -15,7 +15,7 @@ export function LoginModal({opened, closeModal,setUserAuth,setUser,setTop}) {
             password2 = useRef(null);
     const [regLoading, setRegLoading] = useState(false);
     const [logLoading, setLogLoading] = useState(false);
-
+    //TODO rewrite auth function in separated folder API
     const register = async () =>{
         if (login.current.value.length < 3) {
             return showNotification({
@@ -61,7 +61,7 @@ export function LoginModal({opened, closeModal,setUserAuth,setUser,setTop}) {
         if(raw.ok){
             setUser(response.user);
             setTop(response.top);
-            localStorage.setItem('token', `Bearer ${response.user.token}}`);
+            localStorage.setItem('token', `Bearer ${response.user.token}`);
             setRegLoading(false);
             setUserAuth(true);
             closeModal();
@@ -69,6 +69,17 @@ export function LoginModal({opened, closeModal,setUserAuth,setUser,setTop}) {
             showNotification({
                 message: "Регистрация прошла успешно",
             })
+            const raw2 = await fetch(process.env.REACT_APP_API_URL+"/shop/items", {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${response.user.token}`
+                },
+            })
+            const response2 = await raw2.json();
+            if (raw2.ok){
+                setShopItems(response2);
+            }
         }else{
             showNotification({
                 message: response.message,
@@ -116,6 +127,17 @@ export function LoginModal({opened, closeModal,setUserAuth,setUser,setTop}) {
             showNotification({
                 message: "Авторизация прошла успешно",
             })
+            const raw2 = await fetch(process.env.REACT_APP_API_URL+"/shop/items", {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${response.user.token}`
+                },
+            })
+            const response2 = await raw2.json();
+            if (raw2.ok){
+                setShopItems(response2);
+            }
         }else{
             showNotification({
                 message: response.message,
