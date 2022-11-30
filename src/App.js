@@ -4,6 +4,7 @@ import { HeaderResponsive } from './components/Header/Header';
 import {IconGolf,IconTrophy,IconShoppingCart,IconUser} from '@tabler/icons';
 import { BrowserRouter as Router, Navigate,Route,Routes  } from 'react-router-dom';
 import { NotificationsProvider } from '@mantine/notifications';
+import { showNotification } from '@mantine/notifications';
 
 import {Main} from './pages/Main/Main';
 import {Play} from './pages/Play/Play';
@@ -15,11 +16,11 @@ import {LoginModal} from './components/Modals/LoginModal';
 
 
 class GameProcess {
-    constructor(uid,gameParams,setGameParams) {
+    constructor(uid,gameParams,setGameParams,user) {
         this.uid = uid;
         this.gameParams = gameParams;
         this.setGameParams = setGameParams;
-
+        this.user = user;
     }
 
     async connect(){
@@ -40,6 +41,17 @@ class GameProcess {
                 await this.setGameParams({
                     ...this.gameParams,
                     field: data.data.userField, 
+                    //game.players.find(player => player.username == username).points
+                    players: this.gameParams.players.map(player => {
+                        if (player.username == this.user.username){
+                            return {
+                                ...player,
+                                points: data.data.points
+                            }
+                        } else {
+                            return player
+                        }
+                    })
                 });
                 console.log(this.gameParams);
             }
@@ -82,16 +94,13 @@ export default function App() {
         rating: 0,
         avatar: "",
     });
-
+    const [gameScreen, setGameScreen] = useState(false);
     const [gameParams, setGameParams] = useState({
         gameType: 1,
         active: false,
         uid: 0,
-        opponent: {
-            username: "",
-            avatar: "",
-            rating: 0,
-        },
+        players: [],
+        points: {},
         results: {
             me: 0,
             opponent: 0,
@@ -102,7 +111,7 @@ export default function App() {
             difficulty: 0,
             reward:0
         },
-        field:[1,2,2,2,2,2,2,0,0,3,0,1,0,0,0,4,0,0,5,1,0,0,0,4,0,1,0,0,4,0,0,0,-1,0,0,0,1,-1,0,0,0,0,0,0,1,0,0,-1,0,0,1,0,0,0,4,5,3,4,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0]
+        field:[]
     });
 
 
@@ -113,9 +122,42 @@ export default function App() {
     const auth = () => setOpened(true);
     const closeModal = () => setOpened(false);
     const connectGame = async (uid) => {
-        const game = new GameProcess(uid,gameParams,setGameParams); //Move to gameParams
+        const game = new GameProcess(uid,gameParams,setGameParams,user); //Move to gameParams
         await game.connect();
         return game;
+    }
+    const checkGame = async (uid) => {
+        const raw = await fetch(`${process.env.REACT_APP_API_URL}/game/${uid}`, {
+            method: "GET",
+            headers: {
+                "Authorization": localStorage.getItem("token")
+            }
+        });
+        const response = await raw.json();
+        if (raw.ok){
+            setGameParams({
+                ...gameParams,
+                uid: response.uid,
+                active: true,
+                gameParams:{
+                    size: response.size,
+                    difficulty: response.difficulty,
+                    reward: response.reward,
+                },
+                timeBet: response.timeBet,
+                timeStart: response.timeStart,
+                mode: response.mode,
+                field: response.userField,
+                players: response.players,
+            })
+            setGameScreen(true);
+            
+        } else {
+            showNotification({
+                type: "error",
+                message: response.message
+            })
+        }
     }
     useEffect(() => {
         async function checkAuth() {
@@ -135,6 +177,9 @@ export default function App() {
                     setUser(response.user);
                     console.log(response.top);
                     setTop(response.top);
+                    if (response.user.game){
+                        checkGame(response.user.game);
+                    }
                 } else {
                     return setLoading(false)
                 }
@@ -198,7 +243,7 @@ export default function App() {
                     <Routes>
                         
                         {userAuth ? <>
-                        <Route index path="/play" element={<Play gameParams={gameParams} setGameParams={setGameParams} connectGame={connectGame}/>} />
+                        <Route index path="/play" element={<Play gameParams={gameParams} setGameParams={setGameParams} connectGame={connectGame} gameScreen={gameScreen} setGameScreen={setGameScreen}/>} />
                         <Route path="/top" element={<Top top={top}/>} />
                         <Route path="/shop" element={<Shop shopItems={shopItems} user={user} setUser={setUser}/> } />
                         <Route path="/profile" element={<Profile user={user} setUser={setUser}/>} />

@@ -15,16 +15,48 @@ export function GameScreen({gameParams,setGameParams,connectGame}) {
     const { classes } = useStyles();
     const isMobile = useMediaQuery('(max-width: 600px)');
     const [game,setGame] = useState(null)
-    const open = (i) => {
-        game.openCell(i)
+    const open = (event,i) => {
+        event.preventDefault();
+        if (event.button === 0) {     
+            game.openCell(i)
+        } else {
+            game.flagCell(i)
+        }
+
+
     }
- 
+    function sort_by_key(array, key) {
+        return array.sort(function(a, b) {
+            var x = a[key]; var y = b[key];
+            return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+        });
+    }
     useEffect(() => {
         (async () => {
             console.log("connecting");
             setGame(await connectGame(gameParams.uid));
         })();
     },[])
+
+
+    const progressEnd = gameParams.timeStart + gameParams.timeBet*1000
+    const progressStart = gameParams.timeStart
+
+    const [progress, setProgress] = useState(100);
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const now = Date.now()
+            if (now > progressEnd){
+                setProgress(0)
+                return clearInterval(interval);
+            } else {
+                setProgress(100 - (now - progressStart)/(progressEnd - progressStart)*100)
+            }
+            console.log(progress)
+        }, 1000);
+    }, []);
+
+
     return (
         <div className={classes.centered}>
             <Grid>
@@ -33,46 +65,38 @@ export function GameScreen({gameParams,setGameParams,connectGame}) {
                     <Card shadow="sm" p="lg" radius="md" withBorder>
                         <Text weight="bold" fz="md" color="white" align="center">Игроки</Text>
                         <Space h="xs" />
-                        <div className={classes.flexCenter}>
-                            <Avatar src="https://avatars.githubusercontent.com/u/14338007?v=4" size={60}  radius={50}/>
-                                <div style={{marginLeft: 8}}>
-                                    <Text weight="bold">Stepashka20</Text>
-                                    <Text className={classes.flexCenter}>Рейтинг: 5000 <img src={star} width={16} style={{marginLeft: 8}}/></Text>
-                                </div>
-                        </div>
-                        <Space h="xs" />
-                        <div className={classes.flexCenter}>
-                            <Avatar src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=250&q=80" size={60}  radius={50}/>
-                                <div style={{marginLeft: 8}}>
-                                    <Text weight="bold">ValeraNatural</Text>
-                                    <Text className={classes.flexCenter}>Рейтинг: 856 <img src={star} width={16} style={{marginLeft: 8}}/></Text>
-                                </div>
-                        </div>
+                        {gameParams.players.map((player,i) => (
+                            <>
+                            {i !== 0 && <Space h="xs" />}
+                            <div className={classes.flexCenter}>
+                                <Avatar src={ player.avatar ? `${process.env.REACT_APP_API_URL}/cdn/avatar/${player.avatar}` : ""} size={60}  radius={50}/>
+                                    <div style={{marginLeft: 8}}>
+                                        <Text weight="bold">{player.username}</Text>
+                                        <Text className={classes.flexCenter}>Рейтинг: {player.rating} <img src={star} width={16} style={{marginLeft: 8}}/></Text>
+                                    </div>
+                            </div>
+                            </>
+                        ))}
 
                     </Card>
                     <Space h="lg" />
                     <Card shadow="sm" radius="md" withBorder p="lg">
                         <Text weight="bold" fz="md" color="white" align="center">Текущие результаты</Text>
                         <Space h="xs" />
-                        <div className={classes.flexCenter}>
-                            <Indicator dot inline offset={7} position="top-end" label={1} size={22} withBorder>
-                                <Avatar src="https://avatars.githubusercontent.com/u/14338007?v=4" size={60}  radius={50}/>
-                            </Indicator>
-                                <div style={{marginLeft: 8}}>
-                                    <Text weight="bold">Stepashka20</Text>
-                                    <Text className={classes.flexCenter}>Очки: 323</Text>
+                        {sort_by_key(gameParams.players).map((player,i) => (
+                            <>
+                                {i !== 0 && <Space h="xs" />}
+                                <div className={classes.flexCenter}>
+                                    <Indicator dot inline  offset={7} position="top-end" label={i+1} size={22} withBorder>
+                                        <Avatar src={ player.avatar ? `${process.env.REACT_APP_API_URL}/cdn/avatar/${player.avatar}` : ""} size={60}  radius={50}/>
+                                    </Indicator>
+                                        <div style={{marginLeft: 8}}>
+                                            <Text weight="bold">{player.username}</Text>
+                                            <Text className={classes.flexCenter}>Очки: {player.points}</Text>
+                                        </div>
                                 </div>
-                        </div>
-                        <Space h="xs" />
-                        <div className={classes.flexCenter}>
-                            <Indicator dot inline  offset={7} position="top-end" label={2} size={22} withBorder>
-                                <Avatar src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=250&q=80" size={60}  radius={50}/>
-                            </Indicator>
-                                <div style={{marginLeft: 8}}>
-                                    <Text weight="bold">ValeraNatural</Text>
-                                    <Text className={classes.flexCenter}>Очки: 234</Text>
-                                </div>
-                        </div>
+                            </>
+                        ))}
                     </Card>
                 </Grid.Col>
                 <Grid.Col span={6} className={classes.gameGrid} style={isMobile?{flexBasis:"100%",maxWidth:"100%"}:{}}>
@@ -85,7 +109,7 @@ export function GameScreen({gameParams,setGameParams,connectGame}) {
                               */}
                             {gameParams.field.map((item,i) => (
                                 <>
-                                {item==-2 && <div className={classes.box} style={{width: `calc(100% / ${gameParams.gameParams.size})`}} onClick={()=>open(i)}>
+                                {item==-2 && <div className={classes.box} style={{width: `calc(100% / ${gameParams.gameParams.size})`}} onClick={(event)=>open(event,i)} onContextMenu={(e)=>open(e,i)}>
                                      
                                 </div>}
                                 {item==-1 && <div className={classes.box} style={{width: `calc(100% / ${gameParams.gameParams.size})`,background:"none",border:"none"}} >
@@ -94,7 +118,7 @@ export function GameScreen({gameParams,setGameParams,connectGame}) {
                                 {item>=0 && <div className={classes.box} style={{width: `calc(100% / ${gameParams.gameParams.size})`,background:"none",border:"none"}}>
                                     <div className={classes.number}>{item}</div>
                                 </div>}
-                                {item==-3 && <div className={classes.box} style={{width: `calc(100% / ${gameParams.gameParams.size})`}} onClick={()=>open(i)}>
+                                {item==-3 && <div className={classes.box} style={{width: `calc(100% / ${gameParams.gameParams.size})`}} onClick={(event)=>open(event,i)}>
                                     <img src={flag} className={classes.flag} width={16}/>
                                 </div>}
                                 </>
@@ -113,9 +137,8 @@ export function GameScreen({gameParams,setGameParams,connectGame}) {
                     <Text>Сложность: <Badge>легко</Badge></Text>
                     <Text className={classes.flexCenter}>Награда: 564 <img src={star} width={16} style={{marginLeft: 8}}/></Text>
                     <Divider my="sm" />
-                    <Text>Прошло времени: 1:23</Text>
-                    <Text>Порог: 2:30</Text>
-                    <Progress size={6} value={50} />
+                    <Text>Осталось времени:</Text>
+                    <Progress size={10} value={progress}/>
                     <Divider my="sm" />
                     <Button fullWidth>Покинуть игру</Button>
                     </Card>

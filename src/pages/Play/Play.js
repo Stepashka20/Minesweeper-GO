@@ -12,7 +12,7 @@ import { GameScreen } from './GameScreen';
 import { HelpSingleGameModal} from '../../components/Modals/HelpSingleGameModal';
 import { HelpMultiplayerGame} from '../../components/Modals/HelpMultiplayerGameModal';
 
-export function Play({gameParams,setGameParams,connectGame}) {
+export function Play({gameParams,setGameParams,connectGame,gameScreen,setGameScreen}) {
     const { classes } = useStyles();
     const [mode, setMode] = useState('singleplayer');
     const [typeBet, setTypeBet] = useState('rating');
@@ -41,7 +41,7 @@ export function Play({gameParams,setGameParams,connectGame}) {
         { label: <div style={{display:"flex",alignItems:"center"}}>0 <img src={star} width={20}/></div>, value: 'time_1' },
         { label: <div style={{display:"flex",alignItems:"center"}}>0 <img src={star} width={20}/></div>, value: 'time_2' },
     ]);
-    const [gameScreen, setGameScreen] = useState(false);
+    // const [gameScreen, setGameScreen] = useState(false);
     const secondsToMS = (seconds) => {
         let minutes = Math.floor(seconds / 60);
         let secondsLeft = seconds % 60;
@@ -98,8 +98,10 @@ export function Play({gameParams,setGameParams,connectGame}) {
                     reward: response.reward,
                 },
                 timeBet: response.timeBet,
+                timeStart: response.timeStart,
                 mode: response.mode,
-                field: response.userField
+                field: response.userField,
+                players: response.players,
             })
             setLoading(false);
             setGameScreen(true)
