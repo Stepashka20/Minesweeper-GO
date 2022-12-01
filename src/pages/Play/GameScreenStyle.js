@@ -51,6 +51,6 @@ export const useStyles = createStyles((theme, _params, getRef) => ({
         width: "60%",
     },
     number:{
-        fontSize: 40,
+        fontSize: "120%",
     }
 }));

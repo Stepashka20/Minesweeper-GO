@@ -16,18 +16,24 @@ import {LoginModal} from './components/Modals/LoginModal';
 
 
 class GameProcess {
-    constructor(uid,gameParams,setGameParams,user) {
+    constructor(uid,gameParams,setGameParams,user,setGameScreen) {
         this.uid = uid;
         this.gameParams = gameParams;
         this.setGameParams = setGameParams;
         this.user = user;
+        this.setGameScreen = setGameScreen;
+        
     }
 
     async connect(){
         this.socket = new WebSocket(`wss://${process.env.REACT_APP_API_URL.replace("https://","")}/ws/?uid=${this.uid}&token=${localStorage.getItem("token").replace("Bearer ","")}`);
         this.socket.onopen = () => {
             console.log("connected");
-            setInterval(() => {
+            var interval = null;  
+            interval = setInterval(() => {
+                if (!this.socket) {
+                    clearInterval(interval);
+                }
                 this.socket.send(JSON.stringify({type: "ping"}));
             }, 10000);
         }
@@ -54,6 +60,57 @@ class GameProcess {
                     })
                 });
                 console.log(this.gameParams);
+            } else if (data.type === "leave"){
+                game = null;
+                showNotification({
+                    title: "Игра закончена",
+                    message: "Вы покинули игру",
+                    color: "red",
+                    icon: <IconTrophy size={24} />,
+                    timeout: 5000,
+                });
+                setTimeout(() => {
+                    this.setGameScreen(false);
+                    this.socket = null;
+                }, 5000);
+            }else if (data.type === "gameover"){
+                game = null;
+                this.setGameParams({
+                    ...this.gameParams,
+                    field: data.data.userField,
+                    timeStart: 0
+                });
+                showNotification({
+                    title: "Игра закончена",
+                    message: "Вы попали на мину",
+                    color: "red",
+                    icon: <IconTrophy size={24} />,
+                    timeout: 5000,
+                });
+                // setTimeout(() => {
+                //     this.setGameScreen(false);
+                //     this.socket = null;
+                // }, 5000);
+            }else if (data.type === "win"){
+                game = null;
+                if (data.data.reward){
+                    showNotification({
+                        title: "Игра закончена",
+                        message: `Вы выиграли ${data.data.sum} монет`,
+                        color: "green",
+                        icon: <IconTrophy size={24} />,
+                        timeout: 5000,
+                    });
+                } else {
+                    showNotification({
+                        title: "Игра закончена",
+                        message: "Вы прошли игру, но не получаете награды, так как не прошли за установленное время",
+                        color: "green",
+                        icon: <IconTrophy size={24} />,
+                        timeout: 5000,
+                    });
+                }
+                
             }
         }
     }
@@ -85,6 +142,8 @@ class GameProcess {
         }))
     }
 }
+
+var game = null;
 
 export default function App() {
     const [userAuth, setUserAuth] = useState(false);
@@ -121,11 +180,21 @@ export default function App() {
     const [loading, setLoading] = useState(false);
     const auth = () => setOpened(true);
     const closeModal = () => setOpened(false);
+    
+    
     const connectGame = async (uid) => {
-        const game = new GameProcess(uid,gameParams,setGameParams,user); //Move to gameParams
-        await game.connect();
-        return game;
+        if (!game){
+            console.log("no game")
+            game = new GameProcess(uid,gameParams,setGameParams,user,setGameScreen);
+            game.connect();
+            return game;
+            
+        } else {
+            return game;
+        }
     }
+
+
     const checkGame = async (uid) => {
         const raw = await fetch(`${process.env.REACT_APP_API_URL}/game/${uid}`, {
             method: "GET",

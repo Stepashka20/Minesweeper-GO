@@ -22,7 +22,9 @@ export function GameScreen({gameParams,setGameParams,connectGame}) {
         } else {
             game.flagCell(i)
         }
-
+    }
+    const leaveGame = () => {
+        game.leaveGame()
 
     }
     function sort_by_key(array, key) {
@@ -44,11 +46,12 @@ export function GameScreen({gameParams,setGameParams,connectGame}) {
 
     const [progress, setProgress] = useState(100);
     useEffect(() => {
-        const interval = setInterval(() => {
+        var interval = null;  
+        interval = setInterval(() => {
             const now = Date.now()
             if (now > progressEnd){
                 setProgress(0)
-                return clearInterval(interval);
+                clearInterval(interval);
             } else {
                 setProgress(100 - (now - progressStart)/(progressEnd - progressStart)*100)
             }
@@ -118,7 +121,7 @@ export function GameScreen({gameParams,setGameParams,connectGame}) {
                                 {item>=0 && <div className={classes.box} style={{width: `calc(100% / ${gameParams.gameParams.size})`,background:"none",border:"none"}}>
                                     <div className={classes.number}>{item}</div>
                                 </div>}
-                                {item==-3 && <div className={classes.box} style={{width: `calc(100% / ${gameParams.gameParams.size})`}} onClick={(event)=>open(event,i)}>
+                                {item==-3 && <div className={classes.box} style={{width: `calc(100% / ${gameParams.gameParams.size})`}} onClick={(event)=>open(event,i)} onContextMenu={(e)=>open(e,i)}>
                                     <img src={flag} className={classes.flag} width={16}/>
                                 </div>}
                                 </>
@@ -133,14 +136,14 @@ export function GameScreen({gameParams,setGameParams,connectGame}) {
                     <Card shadow="sm" p="lg" radius="md" withBorder>
                     <Text weight="bold" fz="md" color="white" align="center">Об игре</Text>
                     <Space h="xs" />
-                    <Text>Размер карты: <Badge>10x10</Badge></Text>
-                    <Text>Сложность: <Badge>легко</Badge></Text>
-                    <Text className={classes.flexCenter}>Награда: 564 <img src={star} width={16} style={{marginLeft: 8}}/></Text>
+                    <Text>Размер карты: <Badge>{gameParams.gameParams.size} x {gameParams.gameParams.size}</Badge></Text>
+                    <Text>Сложность: <Badge color={{"easy":"","medium":"orange","hard":"red"}[gameParams.gameParams.difficulty]}>{{"easy":"легко","medium":"средне","hard":"тяжело"}[gameParams.gameParams.difficulty]}</Badge></Text>
+                    <Text strikethrough={progress == 0} className={classes.flexCenter}>Награда: {gameParams.gameParams.reward} <img src={star} width={16} style={{marginLeft: 8}}/></Text>
                     <Divider my="sm" />
                     <Text>Осталось времени:</Text>
                     <Progress size={10} value={progress}/>
                     <Divider my="sm" />
-                    <Button fullWidth>Покинуть игру</Button>
+                    <Button fullWidth onClick={()=>leaveGame()}>Завершить игру</Button>
                     </Card>
                 </Grid.Col>
             </Grid>
