@@ -14,15 +14,17 @@ import {Profile} from './pages/Profile/Profile';
 
 import {LoginModal} from './components/Modals/LoginModal';
 
+import star from './assets/svg/star.svg';
+import bomb from './assets/svg/bomb.svg';
 
 class GameProcess {
-    constructor(uid,gameParams,setGameParams,user,setGameScreen) {
+    constructor(uid,gameParams,setGameParams,user,setGameScreen,setUser) {
         this.uid = uid;
         this.gameParams = gameParams;
         this.setGameParams = setGameParams;
         this.user = user;
         this.setGameScreen = setGameScreen;
-        
+        this.setUser = setUser;
     }
 
     async connect(){
@@ -67,12 +69,10 @@ class GameProcess {
                     message: "Вы покинули игру",
                     color: "red",
                     icon: <IconTrophy size={24} />,
-                    timeout: 5000,
+                    timeout: 2000,
                 });
-                setTimeout(() => {
-                    this.setGameScreen(false);
-                    this.socket = null;
-                }, 5000);
+                this.setGameScreen(false);
+                this.socket = null;
             }else if (data.type === "gameover"){
                 game = null;
                 this.setGameParams({
@@ -85,21 +85,36 @@ class GameProcess {
                     message: "Вы попали на мину",
                     color: "red",
                     icon: <IconTrophy size={24} />,
-                    timeout: 5000,
+                    
                 });
-                // setTimeout(() => {
-                //     this.setGameScreen(false);
-                //     this.socket = null;
-                // }, 5000);
             }else if (data.type === "win"){
                 game = null;
                 if (data.data.reward){
+                    this.setUser({
+                        ...this.user,
+                        balance: this.user.balance + data.data.bombs,
+                        rating: this.user.rating + data.data.stars
+                    })
                     showNotification({
                         title: "Игра закончена",
-                        message: `Вы выиграли ${data.data.sum} монет`,
+                        message: "Вы выиграли!",
                         color: "green",
                         icon: <IconTrophy size={24} />,
-                        timeout: 5000,
+                        
+                    });
+                    showNotification({
+                        title: "+ "+data.data.bombs,
+                        color: "dark",
+                        icon: <img src={bomb} width={30} style={{marginLeft: 8}}/>,
+                        styles: (theme) => ({"icon":{backgroundColor: "#25262b !important"}}),
+                        // autoClose: false,
+                    });
+                    showNotification({
+                        title: "+ "+data.data.stars,
+                        color: "dark",
+                        icon: <img src={star} width={24} style={{marginLeft: 8}}/>,
+                        styles: (theme) => ({"icon":{backgroundColor: "#25262b  !important"}}),
+                        // autoClose: false,
                     });
                 } else {
                     showNotification({
@@ -107,7 +122,7 @@ class GameProcess {
                         message: "Вы прошли игру, но не получаете награды, так как не прошли за установленное время",
                         color: "green",
                         icon: <IconTrophy size={24} />,
-                        timeout: 5000,
+                        
                     });
                 }
                 
@@ -185,7 +200,7 @@ export default function App() {
     const connectGame = async (uid) => {
         if (!game){
             console.log("no game")
-            game = new GameProcess(uid,gameParams,setGameParams,user,setGameScreen);
+            game = new GameProcess(uid,gameParams,setGameParams,user,setGameScreen,setUser);
             game.connect();
             return game;
             

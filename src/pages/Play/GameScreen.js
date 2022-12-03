@@ -176,7 +176,7 @@ export function GameScreen({gameParams,setGameParams,connectGame}) {
                         <Space h="xs" />
                         <Text>Размер карты: <Badge>{gameParams.gameParams.size} x {gameParams.gameParams.size}</Badge></Text>
                         <Text>Сложность: <Badge color={{"easy":"","medium":"orange","hard":"red"}[gameParams.gameParams.difficulty]}>{{"easy":"легко","medium":"средне","hard":"тяжело"}[gameParams.gameParams.difficulty]}</Badge></Text>
-                        <Text strikethrough={progress == 0} className={classes.flexCenter}>Награда: {gameParams.gameParams.reward} <img src={star} width={16} style={{marginLeft: 8}}/></Text>
+                        <Text strikethrough={progress == 0} className={classes.flexCenter}>Награда: {gameParams.gameParams.reward.bombs} <img src={bomb} width={16} style={{marginLeft: 8}}/></Text>
                         <Divider my="sm" />
                         <Text>Осталось времени:</Text>
                         <Progress size={10} value={progress}/>

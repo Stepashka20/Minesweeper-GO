@@ -48,18 +48,18 @@ export function Play({gameParams,setGameParams,connectGame,gameScreen,setGameScr
         return `${minutes}:${secondsLeft<10 ? "0":""}${secondsLeft}`;
     }
     useEffect(() => {
-        const p = {
-            "easy": 1,
-            "medium": 2,
-            "hard": 3
-        }
-        const pointsMin = p[difficulty]*(size*5+70);
-        const timeMin = (p[difficulty]+2)*(size*2+Math.floor(size/2));
-
+        const p = {"easy": 1,"medium": 2,"hard": 3}
+        const max_b = 450
+        const max_t = {"easy": 100,"medium": 150,"hard": 200}[difficulty]
+        const b = max_b / 9
+        const t = max_t / 5
+        const pointsMin = b*(3*(size/5-2)+p[difficulty]);
+        const timeMin = t*(size/5-2+4-p[difficulty]);
+        
         setBets([
-            { label: <div style={{display:"flex",alignItems:"center"}}>{secondsToMS(timeMin)} - {pointsMin} <img src={star} width={20} style={{marginLeft: 4}}/></div>, value: 'time_0' },
-            { label: <div style={{display:"flex",alignItems:"center"}}>{secondsToMS(timeMin*2)} - {Math.floor(pointsMin*1.8)} <img src={star} width={20} style={{marginLeft: 4}}/></div>, value: 'time_1' },
-            { label: <div style={{display:"flex",alignItems:"center"}}>{secondsToMS(timeMin*3)} - {Math.floor(pointsMin*1.9*1.9)} <img src={star} width={20} style={{marginLeft: 4}}/></div>, value: 'time_2' },
+            { label: <div style={{display:"flex",alignItems:"center"}}>{secondsToMS(timeMin)} - {Math.floor(pointsMin*1.9*1.9)} <img src={bomb} width={20} style={{marginLeft: 4}}/></div>, value: 'time_0' },
+            { label: <div style={{display:"flex",alignItems:"center"}}>{secondsToMS(timeMin*2)} - {Math.floor(pointsMin*1.8)} <img src={bomb} width={20} style={{marginLeft: 4}}/></div>, value: 'time_1' },
+            { label: <div style={{display:"flex",alignItems:"center"}}>{secondsToMS(timeMin*3)} - {pointsMin} <img src={bomb} width={20} style={{marginLeft: 4}}/></div>, value: 'time_2' },
         ])
     },[size,difficulty])
 
