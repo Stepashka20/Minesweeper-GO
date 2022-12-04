@@ -63,5 +63,10 @@ export const useStyles = createStyles((theme, _params, getRef) => ({
             marginLeft: 16,
             cursor: "pointer",
         }
+    },
+    lobbyLoader:{
+        display: "flex",
+        justifyContent: "center",
+        margin: "50px 0"
     }
 }));

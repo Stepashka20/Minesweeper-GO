@@ -126,6 +126,14 @@ class GameProcess {
                     });
                 }
                 
+            }else if (data.type === "error"){
+                showNotification({
+                    title: "Ошибка",
+                    message: data.data,
+                    color: "red",
+                });
+                this.setGameScreen(false);
+                this.socket = null;
             }
         }
     }
@@ -219,6 +227,7 @@ export default function App() {
         });
         const response = await raw.json();
         if (raw.ok){
+            if (response.mode == "multiplayer") return
             setGameParams({
                 ...gameParams,
                 uid: response.uid,

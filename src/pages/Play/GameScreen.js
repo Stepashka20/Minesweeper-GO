@@ -70,11 +70,7 @@ export function GameScreen({gameParams,setGameParams,connectGame}) {
         }, 1000);
     }, []);
     const bind = useLongPress((i) => {
-        navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
-        window.vibrate(100);
-        game.flagCell(i)
-        // if mobile make vibration
-        
+        // game.flagCell(i)
     },{
         threshold: 100,
         captureEvent: true,
@@ -95,9 +91,9 @@ export function GameScreen({gameParams,setGameParams,connectGame}) {
                             <>
                             {i !== 0 && <Space h="xs" />}
                             <div className={classes.flexCenter}>
-                                <Avatar src={ player.avatar ? `${process.env.REACT_APP_API_URL}/cdn/avatar/${player.avatar}` : ""} size={60}  radius={50}/>
+                            <Avatar src={ player.avatar ? `${process.env.REACT_APP_API_URL}/cdn/avatar/${player.avatar}` : ""} size={60}  radius={50} style={player.customisation.avatarBorder ? {border: `3px solid ${player.customisation.avatarBorder}`} : {}} />
                                     <div style={{marginLeft: 8}}>
-                                        <Text weight="bold">{player.username}</Text>
+                                        <Text weight="bold" style={player.customisation.usernameColor ? {color:player.customisation.usernameColor } : {}}>{player.username}</Text>
                                         <Text className={classes.flexCenter}>Рейтинг: {player.rating} <img src={star} width={16} style={{marginLeft: 8}}/></Text>
                                     </div>
                             </div>
@@ -114,10 +110,10 @@ export function GameScreen({gameParams,setGameParams,connectGame}) {
                                 {i !== 0 && <Space h="xs" />}
                                 <div className={classes.flexCenter}>
                                     <Indicator dot inline  offset={7} position="top-end" label={i+1} size={22} withBorder>
-                                        <Avatar src={ player.avatar ? `${process.env.REACT_APP_API_URL}/cdn/avatar/${player.avatar}` : ""} size={60}  radius={50}/>
+                                        <Avatar src={ player.avatar ? `${process.env.REACT_APP_API_URL}/cdn/avatar/${player.avatar}` : ""} size={60}  radius={50} style={player.customisation.avatarBorder ? {border: `3px solid ${player.customisation.avatarBorder}`} : {}} />
                                     </Indicator>
                                         <div style={{marginLeft: 8}}>
-                                            <Text weight="bold">{player.username}</Text>
+                                            <Text weight="bold" style={player.customisation.usernameColor ? {color:player.customisation.usernameColor } : {}}>{player.username}</Text>
                                             <Text className={classes.flexCenter}>Очки: {player.points}</Text>
                                         </div>
                                 </div>
