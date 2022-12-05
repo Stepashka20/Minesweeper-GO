@@ -161,7 +161,27 @@ export function Play({gameParams,setGameParams,connectGame,gameScreen,setGameScr
     }
 
     const joinLobby = async (uid) => {
+        setSearching(true);
+        const raw = await fetch(process.env.REACT_APP_API_URL+"/game/joinLobby/"+uid, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem("token")
+            }
+        });
 
+        const response = await raw.json();
+        console.log(response)
+        if(raw.ok){
+            
+            connectGame(uid);
+        }else{
+            showNotification({
+                type: "error",
+                message: response.message
+            })
+            setSearching(false);
+        }
     }
     const isMobile = useMediaQuery('(max-width: 600px)');
     return (

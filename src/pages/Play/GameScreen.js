@@ -17,6 +17,7 @@ export function GameScreen({gameParams,setGameParams,connectGame}) {
     const isMobile = useMediaQuery('(max-width: 600px)');
     const [game,setGame] = useState(null)
     const [clickType,setClickType] = useState("shovel")
+    const [currentPlayersResults,setCurrentPlayersResults] = useState(gameParams.players)
     const open = (event,i) => {
         event.preventDefault();
         if (!isMobile){
@@ -41,7 +42,7 @@ export function GameScreen({gameParams,setGameParams,connectGame}) {
     function sort_by_key(array, key) {
         return array.sort(function(a, b) {
             var x = a[key]; var y = b[key];
-            return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+            return ((x > y) ? -1 : ((x < y) ? 1 : 0));
         });
     }
     useEffect(() => {
@@ -50,13 +51,18 @@ export function GameScreen({gameParams,setGameParams,connectGame}) {
             setGame(await connectGame(gameParams.uid));
         })();
     },[])
-
+    useEffect(() => {
+        console.log(gameParams)
+        let copy = [...gameParams.players]
+        setCurrentPlayersResults(sort_by_key(copy,"points"))
+    },[gameParams])
 
     const progressEnd = gameParams.timeStart + gameParams.timeBet*1000
     const progressStart = gameParams.timeStart
 
     const [progress, setProgress] = useState(100);
     useEffect(() => {
+        if (gameParams.mode == "multiplayer") return
         var interval = null;  
         interval = setInterval(() => {
             const now = Date.now()
@@ -66,7 +72,7 @@ export function GameScreen({gameParams,setGameParams,connectGame}) {
             } else {
                 setProgress(100 - (now - progressStart)/(progressEnd - progressStart)*100)
             }
-            console.log(progress)
+            // console.log(progress)
         }, 1000);
     }, []);
     const bind = useLongPress((i) => {
@@ -105,7 +111,7 @@ export function GameScreen({gameParams,setGameParams,connectGame}) {
                     <Card shadow="sm" radius="md" withBorder p="lg">
                         <Text weight="bold" fz="md" color="white" align="center">Текущие результаты</Text>
                         <Space h="xs" />
-                        {sort_by_key(gameParams.players).map((player,i) => (
+                        {currentPlayersResults.map((player,i) => (
                             <>
                                 {i !== 0 && <Space h="xs" />}
                                 <div className={classes.flexCenter}>
@@ -173,9 +179,11 @@ export function GameScreen({gameParams,setGameParams,connectGame}) {
                         <Text>Размер карты: <Badge>{gameParams.gameParams.size} x {gameParams.gameParams.size}</Badge></Text>
                         <Text>Сложность: <Badge color={{"easy":"","medium":"orange","hard":"red"}[gameParams.gameParams.difficulty]}>{{"easy":"легко","medium":"средне","hard":"тяжело"}[gameParams.gameParams.difficulty]}</Badge></Text>
                         <Text strikethrough={progress == 0} className={classes.flexCenter}>Награда: {gameParams.gameParams.reward.bombs} <img src={bomb} width={16} style={{marginLeft: 8}}/></Text>
-                        <Divider my="sm" />
-                        <Text>Осталось времени:</Text>
-                        <Progress size={10} value={progress}/>
+                        {gameParams.mode != "multiplayer" ? <>
+                            <Divider my="sm" />
+                            <Text>Осталось времени:</Text>
+                            <Progress size={10} value={progress}/>
+                        </> : null}
                         <Divider my="sm" />
                         <Button fullWidth onClick={()=>leaveGame()}>Завершить игру</Button>
                     </Card>

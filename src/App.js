@@ -45,21 +45,14 @@ class GameProcess {
         this.socket.onmessage = async (message) => {
             const data = JSON.parse(message.data);
             console.log(data);
+            //TODO get function by type and call it this[data.type](data);
             if (data.type === "open"){
+                this.gameParams.field = data.data.userField;
+                this.gameParams.players.find((player) => player.username == this.user.username).points = data.data.points;
                 await this.setGameParams({
                     ...this.gameParams,
-                    field: data.data.userField, 
-                    //game.players.find(player => player.username == username).points
-                    players: this.gameParams.players.map(player => {
-                        if (player.username == this.user.username){
-                            return {
-                                ...player,
-                                points: data.data.points
-                            }
-                        } else {
-                            return player
-                        }
-                    })
+                    field: this.gameParams.field,
+                    players: this.gameParams.players
                 });
                 console.log(this.gameParams);
             } else if (data.type === "leave"){
@@ -75,10 +68,11 @@ class GameProcess {
                 this.socket = null;
             }else if (data.type === "gameover"){
                 game = null;
+                this.gameParams.field = data.data.userField;
+                this.gameParams.timeStart = 0
                 this.setGameParams({
                     ...this.gameParams,
-                    field: data.data.userField,
-                    timeStart: 0
+                    
                 });
                 showNotification({
                     title: "Игра закончена",
@@ -134,6 +128,55 @@ class GameProcess {
                 });
                 this.setGameScreen(false);
                 this.socket = null;
+            }else if (data.type === "startgame"){
+                const response = data.data.gameParams;
+                this.gameParams = {
+                    ...this.gameParams,
+                    uid: response.uid,
+                    active: true,
+                    gameParams:{
+                        size: response.size,
+                        difficulty: response.difficulty,
+                        reward: response.reward,
+                    },
+                    timeBet: response.timeBet,
+                    timeStart: response.timeStart,
+                    mode: response.mode,
+                    field: response.userFields[0].field,
+                    players: response.players,
+                }
+                this.setGameParams({
+                    ...this.gameParams,
+                    uid: response.uid,
+                    active: true,
+                    gameParams:{
+                        size: response.size,
+                        difficulty: response.difficulty,
+                        reward: response.reward,
+                    },
+                    timeBet: response.timeBet,
+                    timeStart: response.timeStart,
+                    mode: response.mode,
+                    field: response.userFields[0].field,
+                    players: response.players,
+                });
+                this.setGameScreen(true);
+            }else if (data.type === "opponent_points"){
+                this.gameParams.players.find(player => player.username != this.user.username).points = data.data.points;
+                this.setGameParams({
+                    ...this.gameParams,
+                    players: this.gameParams.players
+                });
+            }else if (data.type === "opponent_status"){
+                showNotification({
+                    title: "Информация о противнике",
+                    message: data.data.status == "defeat" ? "Противник попал на мину. Для победы вам надо получить больше очков" : data.data.status,
+                });
+            } else if (data.type === "lose"){
+                showNotification({
+                    title: "Проигрыш",
+                    message: "Вы проиграли",
+                });
             }
         }
     }
@@ -195,7 +238,9 @@ export default function App() {
         },
         field:[]
     });
-
+    useEffect(() => {
+        console.log(gameParams)
+    }, [gameParams])
 
     const [top, setTop] = useState([]);
     const [shopItems, setShopItems] = useState([]);
