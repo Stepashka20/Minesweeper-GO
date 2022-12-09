@@ -12,7 +12,7 @@ import { GameScreen } from './GameScreen';
 import { HelpSingleGameModal} from '../../components/Modals/HelpSingleGameModal';
 import { HelpMultiplayerGame} from '../../components/Modals/HelpMultiplayerGameModal';
 
-export function Play({gameParams,setGameParams,connectGame,gameScreen,setGameScreen}) {
+export function Play({gameParams,setGameParams,connectGame,gameScreen,setGameScreen,setUser,user}) {
     const { classes } = useStyles();
     const [mode, setMode] = useState('singleplayer');
     const [loading, setLoading] = useState(false);
@@ -54,7 +54,7 @@ export function Play({gameParams,setGameParams,connectGame,gameScreen,setGameScr
         return `${minutes}:${secondsLeft<10 ? "0":""}${secondsLeft}`;
     }
     useEffect(() => {
-        setTimeout(async () => {
+        const getlobbyes = async () => {
             const raw = await fetch(process.env.REACT_APP_API_URL+"/game/getLobbies", {
                 method: 'GET',
                 headers: {
@@ -66,7 +66,9 @@ export function Play({gameParams,setGameParams,connectGame,gameScreen,setGameScr
             if (raw.ok) {
                 setLobbies(data);
             }
-        }, 2000);
+        }
+        getlobbyes()
+        // setInterval(getlobbyes, 1000);
     }, []);
     useEffect(() => {
         const p = {"easy": 1,"medium": 2,"hard": 3}
@@ -151,6 +153,11 @@ export function Play({gameParams,setGameParams,connectGame,gameScreen,setGameScr
         if(raw.ok){
             const uid = response.uid;
             connectGame(uid);
+            setUser({
+                ...user,
+                balance: response.balance,
+                rating: response.rating
+            })
         }else{
             showNotification({
                 type: "error",
@@ -172,9 +179,42 @@ export function Play({gameParams,setGameParams,connectGame,gameScreen,setGameScr
 
         const response = await raw.json();
         console.log(response)
-        if(raw.ok){
-            
+        if(raw.ok){    
             connectGame(uid);
+            setUser({
+                ...user,
+                balance: response.balance,
+                rating: response.rating
+            })
+        }else{
+            showNotification({
+                type: "error",
+                message: response.message
+            })
+            setSearching(false);
+        }
+    }
+    const delLobby = async () => {
+        const raw = await fetch(process.env.REACT_APP_API_URL+"/game/deleteLobby", {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem("token")
+            }
+        });
+
+        const response = await raw.json();
+        console.log(response)
+        if(raw.ok){
+            setSearching(false);
+            showNotification({
+                message: response.message
+            })
+            setUser({
+                ...user,
+                balance: response.refundBet.balance,
+                rating: response.refundBet.rating
+            })
         }else{
             showNotification({
                 type: "error",
@@ -340,7 +380,7 @@ export function Play({gameParams,setGameParams,connectGame,gameScreen,setGameScr
                     </div>
                     
                     
-                    <Button fullWidth={true} variant="filled" radius="md" size="md" >
+                    <Button fullWidth={true} variant="filled" radius="md" size="md" onClick={()=>delLobby()}>
                         Отменить
                     </Button>
                 </Box>

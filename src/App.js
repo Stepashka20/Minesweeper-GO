@@ -96,20 +96,22 @@ class GameProcess {
                         icon: <IconTrophy size={24} />,
                         
                     });
-                    showNotification({
-                        title: "+ "+data.data.bombs,
-                        color: "dark",
-                        icon: <img src={bomb} width={30} style={{marginLeft: 8}}/>,
-                        styles: (theme) => ({"icon":{backgroundColor: "#25262b !important"}}),
-                        // autoClose: false,
-                    });
-                    showNotification({
-                        title: "+ "+data.data.stars,
-                        color: "dark",
-                        icon: <img src={star} width={24} style={{marginLeft: 8}}/>,
-                        styles: (theme) => ({"icon":{backgroundColor: "#25262b  !important"}}),
-                        // autoClose: false,
-                    });
+                    if (data.data.bombs>0){
+                        showNotification({
+                            title: "+ "+data.data.bombs,
+                            color: "dark",
+                            icon: <img src={bomb} width={30} style={{marginLeft: 8}}/>,
+                            styles: (theme) => ({"icon":{backgroundColor: "#25262b !important"}}),
+                        });
+                    }
+                    if (data.data.stars>0){
+                        showNotification({
+                            title: "+ "+data.data.stars,
+                            color: "dark",
+                            icon: <img src={star} width={24} style={{marginLeft: 8}}/>,
+                            styles: (theme) => ({"icon":{backgroundColor: "#25262b  !important"}}),
+                        });
+                    }   
                 } else {
                     showNotification({
                         title: "Игра закончена",
@@ -381,7 +383,7 @@ export default function App() {
                     <Routes>
                         
                         {userAuth ? <>
-                        <Route index path="/play" element={<Play gameParams={gameParams} setGameParams={setGameParams} connectGame={connectGame} gameScreen={gameScreen} setGameScreen={setGameScreen}/>} />
+                        <Route index path="/play" element={<Play user={user}  setUser={setUser} gameParams={gameParams} setGameParams={setGameParams} connectGame={connectGame} gameScreen={gameScreen} setGameScreen={setGameScreen}/>} />
                         <Route path="/top" element={<Top top={top}/>} />
                         <Route path="/shop" element={<Shop shopItems={shopItems} user={user} setUser={setUser}/> } />
                         <Route path="/profile" element={<Profile user={user} setUser={setUser}/>} />
