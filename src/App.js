@@ -18,19 +18,24 @@ import star from './assets/svg/star.svg';
 import bomb from './assets/svg/bomb.svg';
 
 class GameProcess {
-    constructor(uid,gameParams,setGameParams,user,setGameScreen,setUser) {
+    constructor(uid,gameParams,setGameParams,user,setGameScreen,setUser,setSearching,reconnect) {
         this.uid = uid;
         this.gameParams = gameParams;
         this.setGameParams = setGameParams;
         this.user = user;
         this.setGameScreen = setGameScreen;
         this.setUser = setUser;
+        this.setSearching = setSearching;
+        this.reconnect = reconnect;
     }
 
     async connect(){
         this.socket = new WebSocket(`wss://${process.env.REACT_APP_API_URL.replace("https://","")}/ws/?uid=${this.uid}&token=${localStorage.getItem("token").replace("Bearer ","")}`);
         this.socket.onopen = () => {
             console.log("connected");
+            if (this.reconnect){
+                this.socket.send(JSON.stringify({type: "reconnect"}));
+            }
             var interval = null;  
             interval = setInterval(() => {
                 if (!this.socket) {
@@ -208,6 +213,7 @@ class GameProcess {
         this.socket.send(JSON.stringify({
             type: "leave"
         }))
+        this.setSearching(false);
     }
 }
 
@@ -248,14 +254,16 @@ export default function App() {
     const [shopItems, setShopItems] = useState([]);
     const [opened, setOpened] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const [searching, setSearching] = useState(false);
     const auth = () => setOpened(true);
     const closeModal = () => setOpened(false);
-    
-    
-    const connectGame = async (uid) => {
+    // var reconnect = false;
+    const [reconnect, setReconnect] = useState(false);
+    const connectGame = async (uid,reconnect=false) => {
         if (!game){
             console.log("no game")
-            game = new GameProcess(uid,gameParams,setGameParams,user,setGameScreen,setUser);
+            game = new GameProcess(uid,gameParams,setGameParams,user,setGameScreen,setUser,setSearching,reconnect);
             game.connect();
             return game;
             
@@ -264,6 +272,12 @@ export default function App() {
         }
     }
 
+    useEffect(() => {
+        if (user.game && reconnect){
+            setReconnect(false);
+            checkGame(user.game);
+        }
+    }, [reconnect])
 
     const checkGame = async (uid) => {
         const raw = await fetch(`${process.env.REACT_APP_API_URL}/game/${uid}`, {
@@ -274,23 +288,34 @@ export default function App() {
         });
         const response = await raw.json();
         if (raw.ok){
-            if (response.mode == "multiplayer") return
-            setGameParams({
-                ...gameParams,
-                uid: response.uid,
-                active: true,
-                gameParams:{
-                    size: response.size,
-                    difficulty: response.difficulty,
-                    reward: response.reward,
-                },
-                timeBet: response.timeBet,
-                timeStart: response.timeStart,
-                mode: response.mode,
-                field: response.userField,
-                players: response.players,
-            })
-            setGameScreen(true);
+            if (response.mode == "multiplayer"){
+                if (response.status == "waiting"){
+                    connectGame(response.uid);
+                    setSearching(true);
+                } else if (response.status == "playing") {
+                    connectGame(uid);
+                    setSearching(true);
+                }
+            } else {
+                setGameParams({
+                    ...gameParams,
+                    uid: response.uid,
+                    active: true,
+                    gameParams:{
+                        size: response.size,
+                        difficulty: response.difficulty,
+                        reward: response.reward,
+                    },
+                    timeBet: response.timeBet,
+                    timeStart: response.timeStart,
+                    mode: response.mode,
+                    field: response.userField,
+                    players: response.players,
+                })
+                setGameScreen(true);
+            }
+           
+            
             
         } else {
             showNotification({
@@ -313,13 +338,14 @@ export default function App() {
                 })
                 const response = await raw.json();
                 if (raw.ok){
+                    if (response.user.game){
+                        setReconnect(true);
+                    }
                     setUserAuth(true);
                     setUser(response.user);
                     console.log(response.top);
                     setTop(response.top);
-                    if (response.user.game){
-                        checkGame(response.user.game);
-                    }
+                    
                 } else {
                     return setLoading(false)
                 }
@@ -383,7 +409,7 @@ export default function App() {
                     <Routes>
                         
                         {userAuth ? <>
-                        <Route index path="/play" element={<Play user={user}  setUser={setUser} gameParams={gameParams} setGameParams={setGameParams} connectGame={connectGame} gameScreen={gameScreen} setGameScreen={setGameScreen}/>} />
+                        <Route index path="/play" element={<Play searching={searching} setSearching={setSearching} user={user}  setUser={setUser} gameParams={gameParams} setGameParams={setGameParams} connectGame={connectGame} gameScreen={gameScreen} setGameScreen={setGameScreen}/>} />
                         <Route path="/top" element={<Top top={top}/>} />
                         <Route path="/shop" element={<Shop shopItems={shopItems} user={user} setUser={setUser}/> } />
                         <Route path="/profile" element={<Profile user={user} setUser={setUser}/>} />

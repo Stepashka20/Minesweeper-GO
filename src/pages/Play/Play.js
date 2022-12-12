@@ -12,33 +12,20 @@ import { GameScreen } from './GameScreen';
 import { HelpSingleGameModal} from '../../components/Modals/HelpSingleGameModal';
 import { HelpMultiplayerGame} from '../../components/Modals/HelpMultiplayerGameModal';
 
-export function Play({gameParams,setGameParams,connectGame,gameScreen,setGameScreen,setUser,user}) {
+export function Play({gameParams,setGameParams,connectGame,gameScreen,setGameScreen,setUser,user,setSearching,searching}) {
     const { classes } = useStyles();
     const [mode, setMode] = useState('singleplayer');
     const [loading, setLoading] = useState(false);
     const [singleGameHelpOpened, setSingleGameHelpOpened] = useState(false);
     const [multiplayerGameHelpOpened, setMultiplayerGameHelpOpened] = useState(false);
-    // const lobbies = [
-    //     { name: "Stepashka20", avatar: "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4", bet: "125 💣", difficulty: 1},
-    //     { name: "Stepashka20", avatar: "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4", bet: "1000 ⭐", difficulty: 2},
-    //     { name: "Stepashka20", avatar: "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4", bet: "5485 💣", difficulty: 3},
-    //     { name: "Stepashka20", avatar: "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4", bet: "1054 ⭐", difficulty: 2},
-    //     { name: "Stepashka20", avatar: "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4", bet: "6254 ⭐", difficulty: 1},
-    //     { name: "Stepashka20", avatar: "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4", bet: "1005 💣", difficulty: 3},
-    //     { name: "Stepashka20", avatar: "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4", bet: "125 💣", difficulty: 1},
-    //     { name: "Stepashka20", avatar: "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4", bet: "1000 ⭐", difficulty: 2},
-    //     { name: "Stepashka20", avatar: "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4", bet: "5485 💣", difficulty: 3},
-    //     { name: "Stepashka20", avatar: "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4", bet: "1054 ⭐", difficulty: 2},
-    //     { name: "Stepashka20", avatar: "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4", bet: "6254 ⭐", difficulty: 1},
-    //     { name: "Stepashka20", avatar: "https://avatars.githubusercontent.com/u/10353856?s=460&u=88394dfd67727327c1f7670a1764dc38a8a24831&v=4", bet: "1005 💣", difficulty: 3},
-    //   ];
+
     const [lobbies, setLobbies] = useState([]);
     const [size, setSize] = useState("10");
     const [difficulty, setDifficulty] = useState("easy");
     const [timeBet, setTimeBet] = useState("time_0");
     const [betType, setBetType] = useState("rating");
 
-    const [searching, setSearching] = useState(false);
+    
 
     const bet = useRef();
     
@@ -186,6 +173,7 @@ export function Play({gameParams,setGameParams,connectGame,gameScreen,setGameScr
                 balance: response.balance,
                 rating: response.rating
             })
+            setSearching(false);
         }else{
             showNotification({
                 type: "error",
@@ -339,7 +327,6 @@ export function Play({gameParams,setGameParams,connectGame,gameScreen,setGameScr
                             </div>
                         </Grid.Col>
                         <Grid.Col span={4} >
-                            {/* ScrollArea  */}
                             <ScrollArea  style={{ height: 260 }} offsetScrollbars scrollbarSize={6} scrollHideDelay={500}>
                                 <div className={classes.lobbyRows}>
                                     {lobbies.map((lobby, index) => (
