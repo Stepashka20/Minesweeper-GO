@@ -22,14 +22,14 @@ export function Top({top}) {
                 <div className={classes.posterDescription}>
                     Соревнуйся с игроками и поднимайся по рейтинговой системе!
                 </div>
-                <div className={classes.posterBtns}>
+                {/* <div className={classes.posterBtns}>
                     <Button leftIcon={<IconInfoCircle/>} color="teal" variant="outline" size="sm" style={{marginRight: 12,marginBottom: 12}}>
                         Как зарабатывать очки?
                     </Button>
                     <Button leftIcon={<IconQuestionMark/>}  color="teal" variant="outline" size="sm">
                         Как устроен лидерборд?
                     </Button>
-                </div>
+                </div> */}
             </BackgroundImage>
             <div className={classes.table}>
                 <div className={classes.topHeader}>

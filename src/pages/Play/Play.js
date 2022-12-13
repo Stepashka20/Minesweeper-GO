@@ -55,7 +55,7 @@ export function Play({gameParams,setGameParams,connectGame,gameScreen,setGameScr
             }
         }
         getlobbyes()
-        // setInterval(getlobbyes, 1000);
+        // setInterval(getlobbyes, 5000);
     }, []);
     useEffect(() => {
         const p = {"easy": 1,"medium": 2,"hard": 3}
@@ -119,7 +119,13 @@ export function Play({gameParams,setGameParams,connectGame,gameScreen,setGameScr
     }
 
     const createLobby = async () => {
-        console.log(size,difficulty,betType,bet.current.value)
+        if (bet.current.value <= 0 ){
+            showNotification({
+                color: "red",
+                message: "Ставка должна быть больше 0"
+            })
+            return;
+        }
         setSearching(true);
         const raw = await fetch(process.env.REACT_APP_API_URL+"/game/createLobby", {
             method: 'POST',
@@ -231,6 +237,7 @@ export function Play({gameParams,setGameParams,connectGame,gameScreen,setGameScr
                     fullWidth={isMobile}
                     onChange={(value) => setMode(value)}
                     value={mode}
+                    style={{zIndex: 0}}
                 />
                 {mode === 'singleplayer'?
                 
@@ -278,8 +285,9 @@ export function Play({gameParams,setGameParams,connectGame,gameScreen,setGameScr
                 </Box>
                 :
                 <Box className={classes.card}>
-                    <Grid grow align="flex-start">
-                        <Grid.Col span={4}>
+                    {/*  style={{flexWrap: "nowrap"}} */}
+                    <Grid grow align="flex-start" style={{flexWrap: isMobile?"wrap" :"nowrap"}}> 
+                        <Grid.Col span={"content"}>
                             <div className={classes.settingsRow}>
                                 <div>Размер поля</div>
                                 <SegmentedControl
@@ -317,7 +325,7 @@ export function Play({gameParams,setGameParams,connectGame,gameScreen,setGameScr
                             </div>
                             <div className={classes.settingsRow}>
                                 <div>Ставка</div>
-                                <Input style={{width:100}} size="md"  rightSection={<img width={24} src={betType == "balance" ?bomb:star} alt="balance"/>} ref={bet} />
+                                <Input style={{width:100}} size="md" type="number" rightSection={<img width={24} src={betType == "balance" ?bomb:star} alt="balance"/>} ref={bet} />
                             </div>
                             <div className={classes.startGameRow}>
                                 <Button fullWidth={true} variant="filled" radius="md" size="md" onClick={()=>createLobby()}>
@@ -326,9 +334,12 @@ export function Play({gameParams,setGameParams,connectGame,gameScreen,setGameScr
                                 <IconHelp size={36} onClick={()=>setMultiplayerGameHelpOpened(true)}/>
                             </div>
                         </Grid.Col>
-                        <Grid.Col span={4} >
+                        <Grid.Col span={"content"} style={isMobile ? {width: "50vw"}: {}}>
+                            
                             <ScrollArea  style={{ height: 260 }} offsetScrollbars scrollbarSize={6} scrollHideDelay={500}>
+                                
                                 <div className={classes.lobbyRows}>
+                                    {lobbies.length == 0 && <div style={{textAlign:"center",minWidth:isMobile ?  0 : 400}}>Нет свободных лобби</div>}
                                     {lobbies.map((lobby, index) => (
                                         <>
                                             <div className={classes.lobbyRowInfo}>
@@ -336,10 +347,14 @@ export function Play({gameParams,setGameParams,connectGame,gameScreen,setGameScr
                                                     <Avatar className={classes.avatar} src={ lobby.avatar ? `${process.env.REACT_APP_API_URL}/cdn/avatar/${lobby.avatar}` : ""} style={lobby.customisation.avatarBorder ? {border: `3px solid ${lobby.customisation.avatarBorder}`} : {}} alt="" radius="xl" size={44}/>
                                                     <div className={classes.lobbyRowNameBet}>
                                                         <div style={lobby.customisation.usernameColor ? {color:lobby.customisation.usernameColor } : {}}>{lobby.username}</div>
-                                                        <div style={{display: "flex",alignItems: "center", gap: 4}}>{lobby.bet} <img width={16} src={lobby.betType == "rating" ? star : bomb}/> <Badge color={{"easy":"","medium":"indigo","hard":"red"}[lobby.difficulty]}>{{"easy":"ЛЕГКО","medium":"СРЕДНЕ","hard":"СЛОЖНО"}[lobby.difficulty]}</Badge></div>
+                                                        <div style={{display: "flex", gap: 8,alignItems: "center"}}>
+                                                            <div  style={{display: "flex",alignItems: "center", gap: 4}}>{lobby.bet} <img width={16} src={lobby.betType == "rating" ? star : bomb}/> </div>
+                                                            <Badge color={{"easy":"","medium":"indigo","hard":"red"}[lobby.difficulty]}>{{"easy":"ЛЕГКО","medium":"СРЕДНЕ","hard":"СЛОЖНО"}[lobby.difficulty]}</Badge>
+                                                            <div>{lobby.size} x {lobby.size}</div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <Button className={classes.enterGameBtn} variant="filled" radius="md" size="md" onClick={()=>joinLobby(lobby.uid)}>
+                                                <Button className={classes.enterGameBtn} variant="filled" radius="md" size={isMobile ? "xs" : "md"} onClick={()=>joinLobby(lobby.uid)}>
                                                     Вступить
                                                 </Button>
                                             </div>

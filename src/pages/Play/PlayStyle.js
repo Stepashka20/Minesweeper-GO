@@ -48,6 +48,10 @@ export const useStyles = createStyles((theme, _params, getRef) => ({
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
+        "@media (min-width: 500px)":{
+            minWidth: 330,
+        }
+        
     },
     avatar:{
         marginRight: 16,

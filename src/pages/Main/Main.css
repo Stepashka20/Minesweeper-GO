@@ -41,7 +41,7 @@
 .lowerTitle{
     font-family: 'Roboto';
     font-size: 20px;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
 .secondColumn img{
@@ -86,3 +86,24 @@
         height: 200px;
     }
 }
+
+
+.quote {
+    background-color: #25262b;
+    border-left: 10px solid #373a40;
+    padding: 0.5em 10px;
+    margin-bottom: 20px;
+}
+
+.quote p {
+    display: inline;
+}
+
+.quote .author {
+    display: block;
+    font-style: italic;
+    margin: 0;
+    /* margin-top: 0.5em; */
+    text-align: right;
+}
+  

@@ -1,7 +1,7 @@
 import { useState,useEffect } from 'react';
-import { createStyles, Header, Container, Burger, Paper, Transition, Menu,Avatar, UnstyledButton,Group,Text, Button,Indicator } from '@mantine/core';
+import { createStyles, Header, Container, Burger, Paper, Transition, Menu,Avatar, UnstyledButton,Group,Text, Button,Drawer } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { MantineLogo } from '@mantine/ds';
+
 import { Link,useLocation } from "react-router-dom"
 import {IconLogout} from '@tabler/icons';
 
@@ -177,20 +177,31 @@ export function HeaderResponsive({ links,auth,user,logout }) {
                 </UnstyledButton>
                 </Menu.Target>
                 <Menu.Dropdown>
-                <Menu.Item icon={<IconLogout size={14} />} onClick={()=>logout()}>
-                    Выйти
-                </Menu.Item>
+                    <Menu.Item icon={<IconLogout size={14} />} onClick={()=>logout()}>
+                        Выйти
+                    </Menu.Item>
                 </Menu.Dropdown>
             </Menu>
             <Burger opened={opened} onClick={toggle} className={classes.burger} size="sm" />
-
-            <Transition transition="pop-top-right" duration={200} mounted={opened}>
+            <Drawer
+                opened={opened}
+                onClose={toggle}
+                // title="Register"
+                padding="xl"
+                size="xl"
+                transition="rotate-left"
+                transitionDuration={250}
+                transitionTimingFunction="ease"
+            >
+                {items}
+            </Drawer>
+            {/* <Transition transition="pop-top-right" duration={200} mounted={opened}>
             {(styles) => (
                 <Paper className={classes.dropdown} withBorder style={styles}>
                 {items}
                 </Paper>
             )}
-            </Transition>
+            </Transition> */}
         </> : <Button variant="filled" onClick={auth} color="blue" size="md">Войти</Button>}
       </Container>
     </Header>

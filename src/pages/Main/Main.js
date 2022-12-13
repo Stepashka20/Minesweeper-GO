@@ -14,8 +14,14 @@ export function Main({auth}) {
                     MINESWEEPER GO
                 </div>
                 <div className="lowerTitle">
-                Играй, побеждай, не подорвись и тд и тп<br/>
-                Тут ещё чёт надо написать
+                {/* Играй, побеждай, не подорвись и тд и тп<br/>
+                Тут ещё чёт надо написать */}
+                <div class="quote">
+                    <p>Мы рискуем, когда встаём с постели, переходим дорогу, или суём пальцы в розетку</p>
+                    <span class="author">- Лейтенант Френк Дребен</span>
+                </div>
+                Но настоящий сапер рискует каждую секунду<br/>
+                Рискнешь ли ты?
                 </div>
                 <Button variant="outline" radius="md" size="lg" onClick={auth}>
                     Занять топ

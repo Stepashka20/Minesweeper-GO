@@ -88,7 +88,7 @@ export function HistoryTable({history}) {
                 {history.map((item, index) => (
                     <div key={index} className={classes.row}>
                         <div className={classes.item}>
-                            <Avatar className={classes.avatar} src={item.avatarUrl ? `${process.env.REACT_APP_API_URL}/cdn/avatar/${item.avatarUrl}`:""} alt="" radius="xl" size={38} />
+                            <Avatar className={classes.avatar} src={item.avatarUrl ? `${process.env.REACT_APP_API_URL}/cdn/avatar/${item.avatarUrl}`:""} alt="" radius="xl" size={34} />
                             <span className={classes.name}>{item.name}</span>
                         </div>
                         <div className={classes.item}>
