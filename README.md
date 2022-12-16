@@ -1,70 +1,40 @@
-# Getting Started with Create React App
+<h1 align="center">Minesweeper GO</h1>
+<p align="center">
+<img src="https://user-images.githubusercontent.com/40739871/208141616-357df0df-a591-4310-978c-0131ae334d98.png"/>
+</p>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# ❓ What is it
+Minesweeper GO is an online minesweeper with two game modes: single player and multiplayer. In single-player mode, you can get in-game money and rating for completing maps at speed, and in multiplayer you can get rating for defeating other players.
+Money can be spent on nickname customization and avatar borders. Rating is used to show top players.
 
-## Available Scripts
+# 👶 Getting Started
 
-In the project directory, you can run:
+Firstly, you will need to clone the repo locally. Once you have it ready navigate into the directory and run the following commands:
 
-### `npm start`
+1. `npm install`
+2. `cp .env.sample .env`
+3. `npm run`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+# 🗃️ Directory Organization
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Assets: Images, and other Media
+- Components: Header and modals, which can be used from any part of the project
+- Pages: each router have relevant page component
 
-### `npm test`
+# 📷 Screenshots
+<p float="left">
+  <img src="https://user-images.githubusercontent.com/40739871/208146270-53403c6c-0c3f-4b34-9cd4-18a7dd2435c7.png" width="500" />
+  <img src="https://user-images.githubusercontent.com/40739871/208146311-f75e3b9e-74bc-4dc9-b988-f9fd8527bafc.png" width="500" /> 
+</p>
+<p float="left">
+  <img src="https://user-images.githubusercontent.com/40739871/208146346-0a72ca2f-c8a4-4d8f-9cd1-3a8134a6cd9c.png" width="500" /> 
+  
+  <img src="https://user-images.githubusercontent.com/40739871/208146416-6cfec774-b64b-4518-b484-6ae86cf9421d.png" width="500" /> 
+</p>
+<p float="left">
+  <img src="https://user-images.githubusercontent.com/40739871/208146042-4e34a2c3-793d-4760-ac16-d73ae5bc3c41.png" width="500" />
+  <img src="https://user-images.githubusercontent.com/40739871/208146132-dfa2db69-6785-4569-866c-a1209953aa30.png" width="500" />
+</p>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
