@@ -23,17 +23,16 @@ Firstly, you will need to clone the repo locally. Once you have it ready navigat
 
 # 📷 Screenshots
 <p float="left">
-  <img src="https://user-images.githubusercontent.com/40739871/208146270-53403c6c-0c3f-4b34-9cd4-18a7dd2435c7.png" width="500" />
-  <img src="https://user-images.githubusercontent.com/40739871/208146311-f75e3b9e-74bc-4dc9-b988-f9fd8527bafc.png" width="500" /> 
+  <img src="https://user-images.githubusercontent.com/40739871/208146270-53403c6c-0c3f-4b34-9cd4-18a7dd2435c7.png" width="49%" />
+  <img src="https://user-images.githubusercontent.com/40739871/208146311-f75e3b9e-74bc-4dc9-b988-f9fd8527bafc.png" width="49%" /> 
 </p>
 <p float="left">
-  <img src="https://user-images.githubusercontent.com/40739871/208146346-0a72ca2f-c8a4-4d8f-9cd1-3a8134a6cd9c.png" width="500" /> 
-  
-  <img src="https://user-images.githubusercontent.com/40739871/208146416-6cfec774-b64b-4518-b484-6ae86cf9421d.png" width="500" /> 
+  <img src="https://user-images.githubusercontent.com/40739871/208146346-0a72ca2f-c8a4-4d8f-9cd1-3a8134a6cd9c.png" width="49%" /> 
+  <img src="https://user-images.githubusercontent.com/40739871/208146416-6cfec774-b64b-4518-b484-6ae86cf9421d.png" width="49%" /> 
 </p>
 <p float="left">
-  <img src="https://user-images.githubusercontent.com/40739871/208146042-4e34a2c3-793d-4760-ac16-d73ae5bc3c41.png" width="500" />
-  <img src="https://user-images.githubusercontent.com/40739871/208146132-dfa2db69-6785-4569-866c-a1209953aa30.png" width="500" />
+  <img src="https://user-images.githubusercontent.com/40739871/208146042-4e34a2c3-793d-4760-ac16-d73ae5bc3c41.png" width="49%" />
+  <img src="https://user-images.githubusercontent.com/40739871/208146132-dfa2db69-6785-4569-866c-a1209953aa30.png" width="49%" />
 </p>
 
 
