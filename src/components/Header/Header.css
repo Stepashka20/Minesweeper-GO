@@ -11,3 +11,26 @@
 .userName{
     margin-bottom: 5px;
 }
+
+#header_logo{
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 900;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    color: #fff;
+}
+
+@media screen and (max-width: 768px) {
+    #header_logo{
+        font-size: 14px;
+    }
+    #header_logo .logoName{
+        display: none;
+    }
+}
+
+#header_logo img{
+    margin-right: 10px;
+}

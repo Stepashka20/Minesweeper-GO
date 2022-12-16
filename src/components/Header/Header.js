@@ -138,9 +138,9 @@ export function HeaderResponsive({ links,auth,user,logout }) {
     <Header height={HEADER_HEIGHT} className={classes.root}>
       <Container size={1400} className={classes.header}>
         {/* <MantineLogo type="" size={28} /> */}
-        <div>
+        <div  id="header_logo">
         <img src={logo} alt="logo" style={{width: 36}}/>
-        Minesweeper GO
+        <span className='logoName'>MINESWEEPER GO</span>
         </div>
         {links.length > 0 ?  <>
             <Group spacing={5} className={classes.links}>
