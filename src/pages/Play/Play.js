@@ -55,7 +55,7 @@ export function Play({gameParams,setGameParams,connectGame,gameScreen,setGameScr
             }
         }
         getlobbyes()
-        // setInterval(getlobbyes, 5000);
+        setInterval(getlobbyes, 5000);
     }, []);
     useEffect(() => {
         const p = {"easy": 1,"medium": 2,"hard": 3}
